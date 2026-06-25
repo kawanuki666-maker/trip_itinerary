@@ -802,7 +802,15 @@ select.form-input {
   <main class="admin-main">
     <div id="tripsSection" class="admin-section active">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <div></div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <input type="text" id="tripSearchInput" class="form-input" placeholder="搜索行程标题..." style="width: 240px; font-size: 12px;">
+          <select id="tripSortSelect" class="form-input" style="width: 140px; font-size: 12px;">
+            <option value="date_desc">最近出发</option>
+            <option value="date_asc">最早出发</option>
+            <option value="name_asc">名称 A-Z</option>
+            <option value="name_desc">名称 Z-A</option>
+          </select>
+        </div>
         <button class="btn btn-primary" id="addTripBtn" style="width: auto; font-size: 12px;">+ 新建行程</button>
       </div>
       <div id="tripsList"></div>
@@ -889,7 +897,16 @@ select.form-input {
           <button class="btn btn-primary" id="addSpotBtn" style="width: auto; font-size: 12px;">+ 新增景点</button>
         </div>
         <div style="margin-bottom: 16px;">
-          <input type="text" id="spotSearchInput" class="form-input" placeholder="搜索景点名称、城市..." style="width: 300px;">
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="spotSearchInput" class="form-input" placeholder="搜索景点名称、城市..." style="width: 240px; font-size: 12px;">
+            <select id="spotCityFilter" class="form-input" style="width: 140px; font-size: 12px;">
+              <option value="">全部城市</option>
+            </select>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-mid); cursor: pointer;">
+              <input type="checkbox" id="spotReservationFilter" style="cursor: pointer;">
+              仅显示需预约
+            </label>
+          </div>
         </div>
         <div id="spotsList"></div>
       </div>
@@ -923,6 +940,13 @@ select.form-input {
           <div class="config-label">当前仓库</div>
           <p style="font-size: 13px; color: var(--text);" id="currentRepo">-</p>
         </div>
+        <div class="config-item">
+          <div class="config-label">线上预览地址</div>
+          <div id="previewUrls" style="font-size: 12px; color: var(--text-mid); line-height: 1.6;">
+            <p style="margin: 4px 0;">🔗 <a href="#" id="settingsPreviewUrl" target="_blank" style="color: var(--accent);">-</a></p>
+            <p style="margin: 4px 0;">⚙️ <a href="#" id="settingsAdminUrl" target="_blank" style="color: var(--accent);">-</a></p>
+          </div>
+        </div>
         <div class="config-note">
           Token 存储在浏览器会话中，关闭浏览器后将清除。
         </div>
@@ -932,7 +956,7 @@ select.form-input {
         <h3 class="section-card-title">数据管理</h3>
         <button class="btn btn-primary" id="syncDataBtn" style="width: auto; margin-right: 12px;">同步数据</button>
         <button class="btn btn-logout" style="width: auto; margin-right: 12px;" id="reloadDataBtn">重新加载数据</button>
-        <button class="btn btn-logout" style="width: auto;" id="previewDataBtn">预览 JSON</button>
+        <button class="btn btn-logout" style="width: auto;" id="previewDataBtn">查看原始数据</button>
         <button class="btn btn-logout" style="width: auto;" id="exportDataBtn">导出 JSON</button>
       </div>
     </div>
@@ -1408,12 +1432,32 @@ const locationData = {
 function renderUI() {
   renderTripsList();
   setTimeout(() => {
+    initSpotCityFilter();
     renderSpotsList();
     renderHotelsList();
     renderDaysList();
     renderPlatformsList();
     renderReservationsList();
   }, 100);
+}
+
+function initSpotCityFilter() {
+  const cityFilter = $('spotCityFilter');
+  if (!cityFilter || !appData.spots) return;
+  
+  // 获取所有不重复的城市
+  const cities = [...new Set(appData.spots.map(s => s.city).filter(c => c))].sort();
+  
+  // 保留第一个"全部城市"选项
+  cityFilter.innerHTML = '<option value="">全部城市</option>';
+  
+  // 添加城市选项
+  cities.forEach(city => {
+    const option = document.createElement('option');
+    option.value = city;
+    option.textContent = city;
+    cityFilter.appendChild(option);
+  });
 }
 
 async function loadData() {
@@ -1506,15 +1550,42 @@ function updateConnectionStatus() {
   const dot = $('connectionDot');
   const status = $('connectionStatus');
   const repoEl = $('currentRepo');
+  const previewUrlEl = $('settingsPreviewUrl');
+  const adminUrlEl = $('settingsAdminUrl');
   
   if (githubConfig.token && githubConfig.repo) {
     dot.classList.remove('disconnected');
     status.textContent = '已连接';
     repoEl.textContent = githubConfig.repo;
+    
+    // 生成预览链接
+    const repoParts = githubConfig.repo.split('/');
+    const username = repoParts[0];
+    const repoName = repoParts[1];
+    const previewUrl = `https://${username}.github.io/${repoName}/preview.html`;
+    const adminUrl = `https://${username}.github.io/${repoName}/admin.html`;
+    
+    if (previewUrlEl) {
+      previewUrlEl.href = previewUrl;
+      previewUrlEl.textContent = previewUrl;
+    }
+    if (adminUrlEl) {
+      adminUrlEl.href = adminUrl;
+      adminUrlEl.textContent = adminUrl;
+    }
   } else {
     dot.classList.add('disconnected');
     status.textContent = '未连接';
     repoEl.textContent = '-';
+    
+    if (previewUrlEl) {
+      previewUrlEl.href = '#';
+      previewUrlEl.textContent = '-';
+    }
+    if (adminUrlEl) {
+      adminUrlEl.href = '#';
+      adminUrlEl.textContent = '-';
+    }
   }
 }
 
@@ -1527,7 +1598,7 @@ function calculateTripDays(startDate, endDate) {
   return diffDays > 0 ? diffDays : 0;
 }
 
-function renderTripsList() {
+function renderTripsList(searchKeyword = '', sortBy = 'date_desc') {
   const listEl = $('tripsList');
   if (!appData.trips || Object.keys(appData.trips).length === 0) {
     listEl.innerHTML = `
@@ -1544,10 +1615,46 @@ function renderTripsList() {
     return;
   }
   
+  // 1. 过滤
+  let trips = Object.values(appData.trips);
+  if (searchKeyword) {
+    const keyword = searchKeyword.toLowerCase();
+    trips = trips.filter(trip => {
+      return trip.title.toLowerCase().includes(keyword) ||
+             (trip.subtitle && trip.subtitle.toLowerCase().includes(keyword)) ||
+             (trip.description && trip.description.toLowerCase().includes(keyword));
+    });
+  }
+  
+  // 2. 排序
+  trips.sort((a, b) => {
+    switch (sortBy) {
+      case 'date_desc':
+        return new Date(b.startDate || 0) - new Date(a.startDate || 0);
+      case 'date_asc':
+        return new Date(a.startDate || 0) - new Date(b.startDate || 0);
+      case 'name_asc':
+        return a.title.localeCompare(b.title, 'zh-CN');
+      case 'name_desc':
+        return b.title.localeCompare(a.title, 'zh-CN');
+      default:
+        return 0;
+    }
+  });
+  
+  if (trips.length === 0) {
+    listEl.innerHTML = `
+      <div class="no-trips">
+        <p>未找到匹配的行程</p>
+      </div>
+    `;
+    return;
+  }
+  
   const tripsGrid = document.createElement('div');
   tripsGrid.className = 'trips-grid';
   
-  tripsGrid.innerHTML = Object.values(appData.trips).map(trip => {
+  tripsGrid.innerHTML = trips.map(trip => {
     let daysCount = calculateTripDays(trip.startDate, trip.endDate);
     if (daysCount === 0 && trip.days) {
       daysCount = trip.days.length;
@@ -1864,11 +1971,18 @@ function savePlatform() {
     return;
   }
   
+  // 获取原有 platform 的 uses 列表（用于保留原有 ID）
+  const originalPlatform = editingPlatformId 
+    ? getCurrentTripPlatforms().find(p => p.id === editingPlatformId) 
+    : null;
+  const originalUses = originalPlatform?.uses || [];
+  
   const platformData = {
     id: editingPlatformId || 'p_' + Date.now(),
     name: name,
     uses: uses.map((desc, index) => ({
-      id: 'u_' + Date.now() + '_' + index,
+      // 编辑时保留原有 ID，只有新增的才生成新 ID
+      id: index < originalUses.length ? originalUses[index].id : 'u_' + Date.now() + '_' + index,
       desc: desc
     }))
   };
@@ -2317,7 +2431,7 @@ function showToast(message, type = 'info', duration = 3000) {
   }, duration);
 }
 
-function renderSpotsList(searchKeyword = '') {
+function renderSpotsList(searchKeyword = '', cityFilter = '', reservationOnly = false) {
   const listEl = $('spotsList');
   if (!appData.spots || appData.spots.length === 0) {
     listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 40px;">暂无景点</p>';
@@ -2328,11 +2442,19 @@ function renderSpotsList(searchKeyword = '') {
   
   if (searchKeyword) {
     const keyword = searchKeyword.toLowerCase();
-    filteredSpots = appData.spots.filter(spot => {
+    filteredSpots = filteredSpots.filter(spot => {
       return spot.name.toLowerCase().includes(keyword) || 
              spot.city.toLowerCase().includes(keyword) ||
              (spot.brief && spot.brief.toLowerCase().includes(keyword));
     });
+  }
+  
+  if (cityFilter) {
+    filteredSpots = filteredSpots.filter(spot => spot.city === cityFilter);
+  }
+  
+  if (reservationOnly) {
+    filteredSpots = filteredSpots.filter(spot => spot.needReservation);
   }
   
   if (filteredSpots.length === 0) {
@@ -2464,7 +2586,7 @@ function exportData() {
 
 async function syncDataToGitHub() {
   if (!githubConfig || !githubConfig.token || !githubConfig.repo) {
-    showToast('请先在设置中配置GitHub Token和仓库信息', 'error');
+    showToast('请先在设置中配置 GitHub Token 和仓库信息', 'error');
     return;
   }
   
@@ -2476,10 +2598,14 @@ async function syncDataToGitHub() {
   const syncBtn = $('syncDataBtn');
   const originalText = syncBtn.textContent;
   syncBtn.disabled = true;
-  syncBtn.textContent = '同步中...';
+  syncBtn.innerHTML = '<span class="loading-spinner"></span> 同步中...';
+  
+  // 显示状态提示
+  showSyncStatus('正在准备数据...');
   
   try {
     // 1. 获取当前文件的 SHA
+    showSyncStatus('正在连接 GitHub...');
     const getFileResponse = await fetch(`https://api.github.com/repos/${githubConfig.repo}/contents/data/itinerary.json`, {
       headers: {
         'Authorization': `token ${githubConfig.token}`,
@@ -2499,6 +2625,7 @@ async function syncDataToGitHub() {
     }
     
     // 2. 准备提交数据
+    showSyncStatus('正在编码数据...');
     const content = JSON.stringify(appData, null, 2);
     const encodedContent = btoa(unescape(encodeURIComponent(content)));
     
@@ -2513,6 +2640,7 @@ async function syncDataToGitHub() {
     }
     
     // 3. 提交更新
+    showSyncStatus('正在上传数据...');
     const updateResponse = await fetch(`https://api.github.com/repos/${githubConfig.repo}/contents/data/itinerary.json`, {
       method: 'PUT',
       headers: {
@@ -2529,18 +2657,122 @@ async function syncDataToGitHub() {
     }
     
     const result = await updateResponse.json();
-    showToast('同步成功！数据已发布到 GitHub', 'success');
+    
+    // 4. 生成预览链接
+    const repoParts = githubConfig.repo.split('/');
+    const username = repoParts[0];
+    const previewUrl = `https://${username}.github.io/${repoParts[1]}/preview.html`;
+    const adminUrl = `https://${username}.github.io/${repoParts[1]}/admin.html`;
+    
+    // 隐藏状态提示
+    hideSyncStatus();
+    
+    // 显示成功提示
+    showSyncSuccess(previewUrl, adminUrl);
+    showToast('同步成功！', 'success');
     
     // 更新连接状态显示
     updateConnectionStatus();
     
   } catch (error) {
     console.error('GitHub sync error:', error);
+    hideSyncStatus();
+    showSyncError(error.message);
     showToast(`同步失败: ${error.message}`, 'error');
   } finally {
     syncBtn.disabled = false;
     syncBtn.textContent = originalText;
   }
+}
+
+// 同步状态提示相关函数
+let syncStatusTimeout = null;
+
+function showSyncStatus(message) {
+  let statusEl = $('syncStatus');
+  if (!statusEl) {
+    statusEl = document.createElement('div');
+    statusEl.id = 'syncStatus';
+    statusEl.style.cssText = 'margin-top: 12px; padding: 12px 16px; background: var(--surface-2); border-radius: 6px; font-size: 13px; color: var(--text-mid);';
+    const dataManagementSection = document.querySelector('.section-card h3.section-card-title');
+    if (dataManagementSection) {
+      dataManagementSection.parentNode.insertBefore(statusEl, dataManagementSection.nextSibling);
+    }
+  }
+  
+  // 显示加载动画和文字
+  const spinnerHtml = '<span style="display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle;"></span>';
+  statusEl.innerHTML = spinnerHtml + message;
+  
+  // 自动隐藏
+  clearTimeout(syncStatusTimeout);
+}
+
+function hideSyncStatus() {
+  const statusEl = $('syncStatus');
+  if (statusEl) {
+    statusEl.style.display = 'none';
+  }
+}
+
+function showSyncSuccess(previewUrl, adminUrl) {
+  hideSyncStatus();
+  
+  let successEl = $('syncStatus');
+  if (!successEl) {
+    successEl = document.createElement('div');
+    successEl.id = 'syncStatus';
+    successEl.style.cssText = 'margin-top: 12px; padding: 16px; background: #e8f5e9; border: 1px solid #4caf50; border-radius: 6px; font-size: 13px;';
+    const dataManagementSection = document.querySelector('.section-card h3.section-card-title');
+    if (dataManagementSection) {
+      dataManagementSection.parentNode.insertBefore(successEl, dataManagementSection.nextSibling);
+    }
+  }
+  
+  successEl.style.background = '#e8f5e9';
+  successEl.style.border = '1px solid #4caf50';
+  successEl.style.color = '#2e7d32';
+  successEl.innerHTML = `
+    <div style="font-weight: 600; margin-bottom: 10px;">✅ 同步成功！</div>
+    <div style="margin-bottom: 8px;">
+      <span>🔗 行程预览：</span>
+      <a href="${previewUrl}" target="_blank" style="color: #1976d2; word-break: break-all;">${previewUrl}</a>
+    </div>
+    <div>
+      <span>⚙️ 管理后台：</span>
+      <a href="${adminUrl}" target="_blank" style="color: #1976d2; word-break: break-all;">${adminUrl}</a>
+    </div>
+  `;
+  
+  // 5秒后自动隐藏
+  syncStatusTimeout = setTimeout(() => {
+    hideSyncStatus();
+  }, 5000);
+}
+
+function showSyncError(message) {
+  hideSyncStatus();
+  
+  let errorEl = $('syncStatus');
+  if (!errorEl) {
+    errorEl = document.createElement('div');
+    errorEl.id = 'syncStatus';
+    errorEl.style.cssText = 'margin-top: 12px; padding: 12px 16px; border-radius: 6px; font-size: 13px;';
+    const dataManagementSection = document.querySelector('.section-card h3.section-card-title');
+    if (dataManagementSection) {
+      dataManagementSection.parentNode.insertBefore(errorEl, dataManagementSection.nextSibling);
+    }
+  }
+  
+  errorEl.style.background = '#ffebee';
+  errorEl.style.border = '1px solid #ef5350';
+  errorEl.style.color = '#c62828';
+  errorEl.innerHTML = `❌ 同步失败：${message}`;
+  
+  // 8秒后自动隐藏
+  syncStatusTimeout = setTimeout(() => {
+    hideSyncStatus();
+  }, 8000);
 }
 
 function initEventListeners() {
@@ -2551,6 +2783,20 @@ function initEventListeners() {
   if ($('modalCloseBtn')) $('modalCloseBtn').addEventListener('click', closeSpotModal);
   if ($('exportDataBtn')) $('exportDataBtn').addEventListener('click', exportData);
   if ($('syncDataBtn')) $('syncDataBtn').addEventListener('click', syncDataToGitHub);
+  
+  // 行程搜索和排序
+  if ($('tripSearchInput')) {
+    $('tripSearchInput').addEventListener('input', (e) => {
+      const sortBy = $('tripSortSelect') ? $('tripSortSelect').value : 'date_desc';
+      renderTripsList(e.target.value, sortBy);
+    });
+  }
+  if ($('tripSortSelect')) {
+    $('tripSortSelect').addEventListener('change', (e) => {
+      const keyword = $('tripSearchInput') ? $('tripSearchInput').value : '';
+      renderTripsList(keyword, e.target.value);
+    });
+  }
   
   // 每日行程相关事件
   if ($('addDayBtn')) $('addDayBtn').addEventListener('click', () => openDayModal());
@@ -2619,7 +2865,25 @@ function initEventListeners() {
   
   if ($('spotSearchInput')) {
     $('spotSearchInput').addEventListener('input', (e) => {
-      renderSpotsList(e.target.value);
+      const cityFilter = $('spotCityFilter') ? $('spotCityFilter').value : '';
+      const reservationOnly = $('spotReservationFilter') ? $('spotReservationFilter').checked : false;
+      renderSpotsList(e.target.value, cityFilter, reservationOnly);
+    });
+  }
+  
+  if ($('spotCityFilter')) {
+    $('spotCityFilter').addEventListener('change', (e) => {
+      const keyword = $('spotSearchInput') ? $('spotSearchInput').value : '';
+      const reservationOnly = $('spotReservationFilter') ? $('spotReservationFilter').checked : false;
+      renderSpotsList(keyword, e.target.value, reservationOnly);
+    });
+  }
+  
+  if ($('spotReservationFilter')) {
+    $('spotReservationFilter').addEventListener('change', (e) => {
+      const keyword = $('spotSearchInput') ? $('spotSearchInput').value : '';
+      const cityFilter = $('spotCityFilter') ? $('spotCityFilter').value : '';
+      renderSpotsList(keyword, cityFilter, e.target.checked);
     });
   }
   
@@ -2763,6 +3027,7 @@ function formatTimeForInput(timeStr) {
 }
 
 let editingDayIndex = null;
+let editingDayId = null;
 let draggedDayIndex = -1;
 
 function calculateDayDate(dayNumber) {
@@ -3281,6 +3546,7 @@ function openDayModal(index = null) {
 
   if (index !== null && index >= 0 && getCurrentTripDays()[index]) {
     const day = getCurrentTripDays()[index];
+    editingDayId = day.id || null;
     $('dayModalTitle').textContent = '编辑每日行程';
     $('dayModalDay').value = day.day || '';
     
@@ -3322,6 +3588,7 @@ function openDayModal(index = null) {
     renderDaySpotList();
     renderDayHotelList();
   } else {
+    editingDayId = null;
     const currentDays = getCurrentTripDays();
     const usedDays = currentDays.map(d => d.day);
     
@@ -3410,6 +3677,7 @@ function saveDay() {
   }
 
   const dayData = {
+    id: editingDayId || 'day_' + Date.now(),
     day: day,
     title: title,
     theme: $('dayModalTheme').value.trim(),
@@ -3479,6 +3747,7 @@ function closeDayModal() {
   if (dayModal) {
     dayModal.style.display = 'none';
     editingDayIndex = null;
+    editingDayId = null;
   }
 }
 
