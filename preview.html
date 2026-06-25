@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行程预览</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f5f5f5;
+  --surface-3: #eeeeee;
+  --text: #1a1a1a;
+  --text-mid: #666666;
+  --text-dim: #999999;
+  --accent: #c4a882;
+  --accent-hover: #b39670;
+  --accent-dim: rgba(196,168,130,0.1);
+  --border: #e5e5e5;
+  --border-light: #eeeeee;
+  --shadow: 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
+  --warning: #e6a23c;
+  --warning-dim: rgba(230,162,60,0.1);
+  --font-title: 'Noto Serif SC', Georgia, 'Songti SC', 'SimSun', serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --detail-width: 380px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: #ddd transparent; }
+
+/* ========== Hero Section ========== */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  max-height: 400px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.hero-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 32px 40px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  min-width: 240px;
+  max-width: 500px;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.hero-title {
+  font-family: var(--font-title);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: 4px;
+}
+
+.hero-subtitle {
+  font-size: 13px;
+  color: var(--text-mid);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+
+.hero-divider {
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+  margin: 12px auto;
+}
+
+.hero-dates {
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.hero-description {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ========== Mobile Hero ========== */
+@media (max-width: 768px) {
+  .hero {
+    aspect-ratio: 4 / 3;
+    min-height: 200px;
+  }
+  
+  .hero-card {
+    padding: 24px 28px;
+    margin: 0 16px;
+  }
+  
+  .hero-title {
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+  
+  .hero-subtitle {
+    font-size: 12px;
+  }
+}
+
+/* ========== Main Layout ========== */
+.main-container {
+  display: flex;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: calc(100vh - 280px);
+}
+
+/* ========== Content Area (Left) ========== */
+.content-area {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  max-width: calc(100% - var(--detail-width));
+}
+
+/* ========== Day Card ========== */
+.day-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.day-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.day-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.day-header:hover {
+  background: var(--surface-3);
+}
+
+.day-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.day-number-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.day-title {
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.day-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-mid);
+  margin-top: 4px;
+}
+
+.day-theme {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.day-body {
+  padding: 16px 20px;
+}
+
+.day-section {
+  margin-bottom: 16px;
+}
+
+.day-section:last-child {
+  margin-bottom: 0;
+}
+
+.day-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.day-section-header svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+
+/* ========== Spot & Hotel List ========== */
+.spot-list, .hotel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spot-item, .hotel-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.spot-item:hover, .hotel-item:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.spot-item.selected, .hotel-item.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.spot-info, .hotel-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.spot-name, .hotel-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.spot-brief, .hotel-location {
+  font-size: 12px;
+  color: var(--text-mid);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spot-tags {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.spot-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.spot-tag.reservation {
+  background: var(--warning-dim);
+  color: var(--warning);
+}
+
+.item-arrow {
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-dim);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+/* ========== Transport & Note ========== */
+.transport-text, .note-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.note-text {
+  background: var(--warning-dim);
+  border-left: 3px solid var(--warning);
+}
+
+/* ========== Platforms Section ========== */
+.section-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.section-block:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.section-block-title {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-block-title svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--accent);
+}
+
+.platform-list, .reservation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.platform-item, .reservation-item {
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.platform-name, .reservation-spot {
+  font-weight: 500;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.platform-uses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.platform-use-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.platform-use, .reservation-info {
+  color: var(--text-mid);
+}
+
+.reservation-item {
+  border-left: 3px solid var(--warning);
+}
+
+.reservation-due {
+  color: var(--warning);
+  font-weight: 500;
+}
+
+/* ========== Detail Panel (Right) ========== */
+.detail-panel {
+  width: var(--detail-width);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.detail-panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.detail-panel-title {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.detail-panel-body {
+  padding: 20px;
+}
+
+.detail-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+}
+
+.detail-empty svg {
+  width: 48px;
+  height: 48px;
+  stroke: var(--border);
+  margin-bottom: 12px;
+}
+
+.detail-empty p {
+  font-size: 13px;
+}
+
+/* ========== Detail Content ========== */
+.detail-section {
+  margin-bottom: 20px;
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.detail-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.detail-name {
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.detail-location {
+  font-size: 13px;
+  color: var(--text-mid);
+  margin-bottom: 12px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.detail-label {
+  color: var(--text-dim);
+  flex-shrink: 0;
+  min-width: 60px;
+}
+
+.detail-value {
+  color: var(--text);
+}
+
+.detail-description {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+/* ========== Empty State ========== */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-dim);
+}
+
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  stroke: var(--border);
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 13px;
+}
+
+/* ========== Responsive ========== */
+@media (min-width: 768px) {
+  .hero {
+    min-height: 320px;
+  }
+  
+  .hero-title {
+    font-size: 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: 360px;
+  }
+  
+  .hero-title {
+    font-size: 48px;
+  }
+  
+  .content-area {
+    padding: 32px 40px;
+  }
+}
+
+/* Mobile: Hide detail panel, use modal instead */
+@media (max-width: 1023px) {
+  .main-container {
+    display: block;
+  }
+  
+  .content-area {
+    max-width: 100%;
+  }
+  
+  .detail-panel {
+    display: none;
+  }
+  
+  .mobile-detail-modal {
+    display: flex;
+  }
+}
+
+/* Mobile Detail Modal */
+.mobile-detail-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg);
+}
+
+.mobile-detail-modal.open {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-detail-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.mobile-detail-close svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-mid);
+}
+
+.mobile-detail-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+  </div>
+</div>
+
+<!-- Mobile Detail Modal -->
+<div class="mobile-detail-modal" id="mobileDetailModal">
+  <div class="mobile-detail-header">
+    <span class="detail-panel-title" id="mobileDetailTitle">详情</span>
+    <button class="mobile-detail-close" onclick="closeMobileDetail()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <div class="mobile-detail-content" id="mobileDetailContent"></div>
+</div>
+
+<style>
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: var(--text-dim);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+// ========== State ==========
+let currentTrip = null;
+let spots = [];
+let hotels = [];
+let days = [];
+let platforms = [];
+let reservations = [];
+let selectedSpotId = null;
+let selectedHotelId = null;
+
+// ========== Utils ==========
+function $(id) {
+  return document.getElementById(id);
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return `${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
+function formatWeekday(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+  return weekdays[d.getDay()];
+}
+
+function getSpotById(id) {
+  return spots.find(s => s.id === id);
+}
+
+function getHotelById(id) {
+  return hotels.find(h => h.id === id);
+}
+
+// ========== Render Functions ==========
+function renderHero() {
+  const trip = currentTrip;
+  if (!trip) return '';
+  
+  const dates = trip.startDate && trip.endDate
+    ? `${formatDate(trip.startDate)} — ${formatDate(trip.endDate)}`
+    : '';
+  
+  return `
+    <div class="hero">
+      <div class="hero-card">
+        <h1 class="hero-title">${trip.title || '未命名行程'}</h1>
+        ${trip.subtitle ? `<p class="hero-subtitle">${trip.subtitle}</p>` : ''}
+        <div class="hero-divider"></div>
+        ${dates ? `<p class="hero-dates">${dates}</p>` : ''}
+        ${trip.description ? `<p class="hero-description">${trip.description.replace(/\n/g, '<br>')}</p>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderSpots(spotIds) {
+  if (!spotIds || spotIds.length === 0) {
+    return '<div class="empty-state"><p>暂无景点</p></div>';
+  }
+  
+  return spotIds.map(spotId => {
+    const spot = getSpotById(spotId);
+    if (!spot) return '';
+    
+    const isSelected = selectedSpotId === spotId;
+    const cityShort = spot.city ? spot.city.split(' - ').pop() : '';
+    
+    return `
+      <div class="spot-item ${isSelected ? 'selected' : ''}" onclick="selectSpot('${spot.id}')">
+        <div class="spot-info">
+          <div class="spot-name">${spot.name}</div>
+          <div class="spot-brief">${spot.brief || ''}</div>
+        </div>
+        <div class="spot-tags">
+          ${cityShort ? `<span class="spot-tag">${cityShort}</span>` : ''}
+          ${spot.needReservation ? '<span class="spot-tag reservation">需预约</span>' : ''}
+        </div>
+        <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderHotels(accommodation) {
+  if (!accommodation || !accommodation.hotelId) {
+    return '<div class="empty-state"><p>暂无住宿</p></div>';
+  }
+  
+  const hotel = getHotelById(accommodation.hotelId);
+  if (!hotel) return '<div class="empty-state"><p>住宿信息未找到</p></div>';
+  
+  const isSelected = selectedHotelId === hotel.id;
+  const cityShort = hotel.location ? hotel.location.split(' - ').pop() : '';
+  
+  return `
+    <div class="hotel-item ${isSelected ? 'selected' : ''}" onclick="selectHotel('${hotel.id}')">
+      <div class="hotel-info">
+        <div class="hotel-name">${hotel.name}</div>
+        <div class="hotel-location">${cityShort || hotel.location || ''}</div>
+      </div>
+      <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </div>
+  `;
+}
+
+function renderDayCard(day, index) {
+  const dayDate = currentTrip?.startDate ? new Date(currentTrip.startDate) : null;
+  if (dayDate) {
+    dayDate.setDate(dayDate.getDate() + day.day - 1);
+  }
+  
+  const dateStr = dayDate ? `${dayDate.getMonth() + 1}月${dayDate.getDate()}日` : '';
+  const weekdayStr = dayDate ? formatWeekday(dayDate.toISOString()) : '';
+  
+  return `
+    <div class="day-card" id="day-${day.day}">
+      <div class="day-header" onclick="toggleDay(${day.day})">
+        <div class="day-header-content">
+          <span class="day-number-badge">D${day.day}</span>
+          <div>
+            <div class="day-title">${day.title || ''}</div>
+            <div class="day-meta">
+              ${dateStr ? `<span>${dateStr}</span>` : ''}
+              ${weekdayStr ? `<span>${weekdayStr}</span>` : ''}
+              ${day.theme ? `<span class="day-theme">${day.theme}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="day-body" id="day-body-${day.day}">
+        <div class="day-section">
+          <div class="day-section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            景点
+          </div>
+          <div class="spot-list">${renderSpots(day.spotIds)}</div>
+        </div>
+        
+        <div class="day-section">
+          <div class="day-section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            住宿
+          </div>
+          <div class="hotel-list">${renderHotels(day.accommodation)}</div>
+        </div>
+        
+        ${day.transport ? `
+        <div class="day-section">
+          <div class="day-section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="5.5" cy="17.5" r="2.5"></circle>
+              <circle cx="18.5" cy="17.5" r="2.5"></circle>
+              <path d="M8 17h8M3 9h18l-2 8H5L3 9z"></path>
+            </svg>
+            交通
+          </div>
+          <div class="transport-text">${day.transport}</div>
+        </div>
+        ` : ''}
+        
+        ${day.note ? `
+        <div class="day-section">
+          <div class="day-section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            备注
+          </div>
+          <div class="note-text">${day.note}</div>
+        </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderPlatformsSection() {
+  if (!platforms || platforms.length === 0) return '';
+  
+  return `
+    <div class="section-block">
+      <h2 class="section-block-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        购票平台
+      </h2>
+      <div class="platform-list">
+        ${platforms.map(p => {
+          const uses = p.uses || [{ desc: p.use }];
+          return `
+            <div class="platform-item">
+              <span class="platform-name">${p.name}</span>
+              <div class="platform-uses">
+                ${uses.map(u => `<span class="platform-use-tag">${u.desc || u}</span>`).join('')}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderReservationsSection() {
+  if (!reservations || reservations.length === 0) return '';
+  
+  return `
+    <div class="section-block">
+      <h2 class="section-block-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M22 11h-6.11a1 1 0 0 1-.89-.55l-2-4a1 1 0 0 0-1.78 0l-2 4a1 1 0 0 1-.89.55H2"></path>
+          <circle cx="12" cy="12" r="10"></circle>
+        </svg>
+        预约提醒
+      </h2>
+      <div class="reservation-list">
+        ${reservations.map(r => {
+          const spot = getSpotById(r.spotId);
+          return `
+            <div class="reservation-item">
+              <span class="reservation-spot">${spot ? spot.name : '未知景点'}</span>
+              <span class="reservation-info">
+                ${r.platform ? `${r.platform}` : ''}
+                ${r.advance ? ` · 提前${r.advance}天` : ''}
+                ${r.dueDate ? ` · 截止${r.dueDate}` : ''}
+              </span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderDetailPanel() {
+  // Check if we have selected spot or hotel
+  if (selectedSpotId) {
+    const spot = getSpotById(selectedSpotId);
+    if (spot) {
+      return renderSpotDetail(spot, true);
+    }
+  }
+  
+  if (selectedHotelId) {
+    const hotel = getHotelById(selectedHotelId);
+    if (hotel) {
+      return renderHotelDetail(hotel, true);
+    }
+  }
+  
+  // Empty state
+  return `
+    <div class="detail-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <p>点击左侧景点或住宿<br>查看详情</p>
+    </div>
+  `;
+}
+
+function renderSpotDetail(spot, isPanel = false) {
+  const cityShort = spot.city ? spot.city.split(' - ').pop() : '';
+  
+  let html = `
+    <div class="detail-section">
+      <div class="detail-name">${spot.name}</div>
+      ${cityShort ? `<div class="detail-location">${cityShort}</div>` : ''}
+    </div>
+  `;
+  
+  if (spot.brief) {
+    html += `
+      <div class="detail-section">
+        <div class="detail-section-title">简介</div>
+        <div class="detail-description">${spot.brief}</div>
+      </div>
+    `;
+  }
+  
+  if (spot.hours || spot.ticket) {
+    html += `<div class="detail-section">`;
+    if (spot.hours) {
+      html += `
+        <div class="detail-row">
+          <span class="detail-label">开放时间</span>
+          <span class="detail-value">${spot.hours}</span>
+        </div>
+      `;
+    }
+    if (spot.ticket) {
+      html += `
+        <div class="detail-row">
+          <span class="detail-label">门票</span>
+          <span class="detail-value">${spot.ticket}</span>
+        </div>
+      `;
+    }
+    html += `</div>`;
+  }
+  
+  if (spot.description) {
+    html += `
+      <div class="detail-section">
+        <div class="detail-section-title">详情</div>
+        <div class="detail-description">${spot.description}</div>
+      </div>
+    `;
+  }
+  
+  return html;
+}
+
+function renderHotelDetail(hotel, isPanel = false) {
+  let html = `
+    <div class="detail-section">
+      <div class="detail-name">${hotel.name}</div>
+      ${hotel.location ? `<div class="detail-location">${hotel.location}</div>` : ''}
+    </div>
+  `;
+  
+  html += `<div class="detail-section">`;
+  if (hotel.address) {
+    html += `
+      <div class="detail-row">
+        <span class="detail-label">地址</span>
+        <span class="detail-value">${hotel.address}</span>
+      </div>
+    `;
+  }
+  if (hotel.phone) {
+    html += `
+      <div class="detail-row">
+        <span class="detail-label">电话</span>
+        <span class="detail-value">${hotel.phone}</span>
+      </div>
+    `;
+  }
+  html += `
+    <div class="detail-row">
+      <span class="detail-label">入住/退房</span>
+      <span class="detail-value">${hotel.checkInTime || '14:00'} / ${hotel.checkOutTime || '12:00'}</span>
+    </div>
+  `;
+  if (hotel.notes) {
+    html += `
+      <div class="detail-row">
+        <span class="detail-label">备注</span>
+        <span class="detail-value">${hotel.notes}</span>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  
+  return html;
+}
+
+// ========== Interaction Functions ==========
+function selectSpot(spotId) {
+  selectedSpotId = spotId;
+  selectedHotelId = null;
+  updateDetailPanel();
+  updateSpotSelection();
+}
+
+function selectHotel(hotelId) {
+  selectedHotelId = hotelId;
+  selectedSpotId = null;
+  updateDetailPanel();
+  updateSpotSelection();
+}
+
+function updateDetailPanel() {
+  $('detailPanelBody').innerHTML = renderDetailPanel();
+  $('detailPanelTitle').textContent = selectedSpotId ? '景点详情' : (selectedHotelId ? '住宿详情' : '详情');
+}
+
+function updateSpotSelection() {
+  document.querySelectorAll('.spot-item').forEach(el => {
+    el.classList.toggle('selected', el.onclick.toString().includes(`'${selectedSpotId}'`));
+  });
+  document.querySelectorAll('.hotel-item').forEach(el => {
+    el.classList.toggle('selected', el.onclick.toString().includes(`'${selectedHotelId}'`));
+  });
+}
+
+function toggleDay(dayNum) {
+  const body = $(`day-body-${dayNum}`);
+  if (body) {
+    body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+// Mobile detail modal
+function openMobileDetail() {
+  const modal = $('mobileDetailModal');
+  const content = $('mobileDetailContent');
+  const title = $('mobileDetailTitle');
+  
+  if (selectedSpotId) {
+    const spot = getSpotById(selectedSpotId);
+    if (spot) {
+      content.innerHTML = renderSpotDetail(spot);
+      title.textContent = spot.name;
+    }
+  } else if (selectedHotelId) {
+    const hotel = getHotelById(selectedHotelId);
+    if (hotel) {
+      content.innerHTML = renderHotelDetail(hotel);
+      title.textContent = hotel.name;
+    }
+  }
+  
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileDetail() {
+  $('mobileDetailModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ========== Main ==========
+function init() {
+  const viewingTripId = localStorage.getItem('viewingTripId');
+  const appDataStr = localStorage.getItem('appData');
+  
+  if (!viewingTripId || !appDataStr) {
+    $('app').innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <p>未找到行程数据</p>
+        <p style="font-size: 12px; margin-top: 8px;">请从管理后台选择要预览的行程</p>
+      </div>
+    `;
+    return;
+  }
+  
+  try {
+    const appData = JSON.parse(appDataStr);
+    const trip = appData.trips?.[viewingTripId];
+    
+    if (!trip) {
+      throw new Error('行程不存在');
+    }
+    
+    currentTrip = trip;
+    spots = appData.spots || [];
+    hotels = appData.hotels || [];
+    days = trip.days || [];
+    platforms = trip.platforms || [];
+    reservations = trip.reservations || [];
+    
+    document.title = `${trip.title || '行程预览'} - 预览`;
+    
+    $('app').innerHTML = `
+      ${renderHero()}
+      <div class="main-container">
+        <div class="content-area">
+          ${days.map((day, i) => renderDayCard(day, i)).join('')}
+          ${renderPlatformsSection()}
+          ${renderReservationsSection()}
+        </div>
+        <aside class="detail-panel">
+          <div class="detail-panel-header">
+            <h3 class="detail-panel-title" id="detailPanelTitle">详情</h3>
+          </div>
+          <div class="detail-panel-body" id="detailPanelBody">
+            ${renderDetailPanel()}
+          </div>
+        </aside>
+      </div>
+    `;
+    
+    // Auto-expand first day
+    // toggleDay(1); // Keep collapsed by default
+    
+    // Add click handler for mobile
+    document.querySelectorAll('.spot-item, .hotel-item').forEach(el => {
+      el.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          openMobileDetail();
+        }
+      });
+    });
+    
+    // Clear storage
+    localStorage.removeItem('viewingTripId');
+    
+  } catch (e) {
+    console.error('加载行程失败:', e);
+    $('app').innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        <p>加载行程失败</p>
+        <p style="font-size: 12px; margin-top: 8px;">${e.message}</p>
+      </div>
+    `;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

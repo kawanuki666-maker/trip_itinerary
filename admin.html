@@ -1,0 +1,3722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行程管理 · 管理后台</title>
+<meta name="description" content="行程管理系统管理后台">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f5f5f5;
+  --surface-3: #eeeeee;
+  --text: #1a1a1a;
+  --text-mid: #666666;
+  --text-dim: #999999;
+  --accent: #c4a882;
+  --accent-hover: #b39670;
+  --accent-dim: rgba(196,168,130,0.1);
+  --border: #e5e5e5;
+  --border-light: #eeeeee;
+  --shadow: 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
+  --nav-height: 60px;
+  --font-title: 'Noto Serif SC', Georgia, 'Songti SC', 'SimSun', serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-en: 'Playfair Display', Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: #ddd transparent; }
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--bg);
+}
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 48px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-md);
+}
+
+.login-title {
+  font-family: var(--font-title);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: 4px;
+}
+
+.login-subtitle {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  border-radius: 2px;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(196, 168, 130, 0.15);
+}
+
+select.form-input {
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  appearance: none;
+}
+
+.form-input::placeholder {
+  color: var(--text-dim);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 2px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--text);
+  color: var(--surface);
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background: var(--text-mid);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-error {
+  color: #c00;
+  font-size: 12px;
+  margin-top: 12px;
+  text-align: center;
+  display: none;
+}
+
+.login-help {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.login-help-title {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.login-help-text {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+.admin-page {
+  display: none;
+  min-height: 100vh;
+}
+
+.admin-page.active {
+  display: flex;
+}
+
+.admin-sidebar {
+  width: 220px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-brand {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 2px;
+}
+
+.sidebar-nav {
+  padding: 16px 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: var(--text-mid);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 2px solid transparent;
+  position: relative;
+}
+
+.nav-item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.nav-item:hover svg {
+  stroke: var(--text);
+}
+
+.nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent-hover);
+  border-left-color: var(--accent);
+}
+
+.nav-item.active svg {
+  stroke: var(--accent);
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: var(--text-mid);
+  transition: stroke 0.2s ease;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-logout {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  width: 100%;
+}
+
+.btn-logout:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: 220px;
+  padding: 32px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-title {
+  font-family: var(--font-title);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 2px;
+}
+
+.admin-section {
+  display: none;
+}
+
+.admin-section.active {
+  display: block;
+}
+
+.section-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  border-radius: 2px;
+}
+
+.section-card-title {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.config-item {
+  margin-bottom: 20px;
+}
+
+.config-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.config-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4a9e4a;
+}
+
+.status-dot.disconnected {
+  background: #c00;
+}
+
+.config-note {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+  max-width: 400px;
+  box-shadow: var(--shadow-md);
+  animation: toastSlideIn 0.3s ease;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast.fade-out {
+  animation: toastFadeOut 0.3s ease forwards;
+}
+
+@keyframes toastFadeOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-success {
+  border-left: 3px solid #4a9e4a;
+}
+
+.toast-error {
+  border-left: 3px solid #c00;
+}
+
+.toast-info {
+  border-left: 3px solid var(--accent);
+}
+
+.toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 60px;
+  }
+  .sidebar-header { padding: 16px; }
+  .sidebar-brand { display: none; }
+  .nav-item span { display: none; }
+  .admin-main { margin-left: 60px; padding: 16px; }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 2px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.photo-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.photo-upload-area:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.photo-upload-area input {
+  display: none;
+}
+
+.day-modal-content {
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.trips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.trip-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.trip-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.trip-card-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  background: var(--surface-2);
+}
+
+.trip-card-content {
+  padding: 16px;
+}
+
+.trip-card-title {
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.trip-card-dates {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.trip-card-desc {
+  font-size: 12px;
+  color: var(--text-mid);
+  margin-bottom: 12px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 38.4px; /* 1.6 * 12px * 2行 */
+}
+
+.trip-card-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.trip-card-stat {
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.trip-card-main {
+  cursor: pointer;
+}
+
+.trip-card-actions {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.trip-card-action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-mid);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trip-card-action-btn:hover {
+  color: var(--accent);
+}
+
+.trip-card-action-btn[data-action="delete"]:hover {
+  color: #e53935;
+}
+
+.trip-card-action-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.trip-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.trip-tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-dim);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.trip-tab:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.trip-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 500;
+}
+
+.trip-panel {
+  display: none;
+}
+
+.trip-panel.active {
+  display: block;
+}
+
+.no-trips {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+}
+
+.no-trips svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <h1 class="login-title">管理后台</h1>
+    <p class="login-subtitle">行程管理系统</p>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">GitHub Personal Access Token</label>
+        <input type="password" class="form-input" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">仓库名称</label>
+        <input type="text" class="form-input" id="repoInput" placeholder="my-itinerary">
+      </div>
+      
+      <button type="submit" class="btn btn-primary" id="loginBtn">进入后台</button>
+      <button type="button" class="btn btn-logout" id="skipLoginBtn" style="width: 100%; margin-top: 12px;">跳过验证直接进入（仅本地测试）</button>
+      
+      <p class="login-error" id="loginError">Token 或仓库名称无效</p>
+    </form>
+    
+    <div class="login-help">
+      <p class="login-help-title">如何获取 Token？</p>
+      <p class="login-help-text">
+        1. 登录 GitHub → Settings → Developer settings<br>
+        2. Personal access tokens → Generate new token<br>
+        3. 勾选 repo 权限 → 生成 Token<br>
+        4. 妥善保存，勿泄露给他人
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="adminPage" class="admin-page">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">行程管理</div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-section="trips">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>我的行程</span>
+      </div>
+      <div class="nav-item" data-section="spots">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>景点库</span>
+      </div>
+      <div class="nav-item" data-section="hotels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <span>酒店库</span>
+      </div>
+      <div class="nav-item" data-section="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span>设置</span>
+      </div>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <button class="btn btn-logout" id="logoutBtn">退出登录</button>
+    </div>
+  </aside>
+  
+  <main class="admin-main">
+    <div id="tripsSection" class="admin-section active">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div></div>
+        <button class="btn btn-primary" id="addTripBtn" style="width: auto; font-size: 12px;">+ 新建行程</button>
+      </div>
+      <div id="tripsList"></div>
+    </div>
+    
+    <div id="tripDetailSection" class="admin-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <button class="btn btn-logout" id="backToTripsBtn" style="width: auto; font-size: 12px;">← 返回行程列表</button>
+      </div>
+      
+      <div style="border-bottom: 1px solid var(--border); margin-bottom: 20px;">
+        <div class="trip-tabs">
+          <div class="trip-tab active" data-tab="basic" onclick="switchTripTab('basic')">基本信息</div>
+          <div class="trip-tab" data-tab="days" onclick="switchTripTab('days')">每日行程</div>
+          <div class="trip-tab" data-tab="platforms" onclick="switchTripTab('platforms')">购票平台</div>
+          <div class="trip-tab" data-tab="reservations" onclick="switchTripTab('reservations')">预约提醒</div>
+        </div>
+      </div>
+      
+      <div id="basicPanel" class="trip-panel active">
+        <div class="section-card">
+          <div class="form-group">
+            <label class="form-label">行程标题</label>
+            <input type="text" class="form-input" id="tripTitle">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label">出发日期</label>
+              <input type="date" class="form-input" id="tripStartDate">
+            </div>
+            <div class="form-group">
+              <label class="form-label">回程日期</label>
+              <input type="date" class="form-input" id="tripEndDate">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">副标题</label>
+            <input type="text" class="form-input" id="tripSubtitle">
+          </div>
+          <div class="form-group">
+            <label class="form-label">行程描述</label>
+            <textarea class="form-input" id="tripDescription" rows="4"></textarea>
+          </div>
+          <button class="btn btn-primary" id="saveTripBtn" style="width: auto;">保存修改</button>
+        </div>
+      </div>
+      
+      <div id="daysPanel" class="trip-panel">
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <p style="color: var(--text-dim); font-size: 12px;">共 <span id="daysCount">0</span> 天行程</p>
+            <button class="btn btn-primary" id="addDayBtn" style="width: auto; font-size: 12px;">添加行程</button>
+          </div>
+          <div id="daysList"></div>
+        </div>
+      </div>
+      
+      <div id="platformsPanel" class="trip-panel">
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <p style="color: var(--text-dim); font-size: 12px;">共 <span id="platformsCount">0</span> 个平台</p>
+            <button class="btn btn-primary" id="addPlatformBtn" style="width: auto; font-size: 12px;">+ 添加购票平台</button>
+          </div>
+          <div id="platformsList"></div>
+        </div>
+      </div>
+      
+      <div id="reservationsPanel" class="trip-panel">
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <p style="color: var(--text-dim); font-size: 12px;">共 <span id="reservationsCount">0</span> 个提醒</p>
+            <button class="btn btn-primary" id="addReservationBtn" style="width: auto; font-size: 12px;">+ 添加预约提醒</button>
+          </div>
+          <div id="reservationsList"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="spotsSection" class="admin-section">
+      <div class="section-card">
+        <h3 class="section-card-title">景点库管理</h3>
+        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <p style="color: var(--text-dim); font-size: 12px;">共 <span id="spotsCount">0</span> 个景点</p>
+          <button class="btn btn-primary" id="addSpotBtn" style="width: auto; font-size: 12px;">+ 新增景点</button>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <input type="text" id="spotSearchInput" class="form-input" placeholder="搜索景点名称、城市..." style="width: 300px;">
+        </div>
+        <div id="spotsList"></div>
+      </div>
+    </div>
+    
+    <div id="hotelsSection" class="admin-section">
+      <div class="section-card">
+        <h3 class="section-card-title">酒店库管理</h3>
+        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <p style="color: var(--text-dim); font-size: 12px;">共 <span id="hotelsCount">0</span> 个酒店</p>
+          <button class="btn btn-primary" id="addHotelBtn" style="width: auto; font-size: 12px;">+ 新增酒店</button>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <input type="text" id="hotelSearchInput" class="form-input" placeholder="搜索酒店名称、城市..." style="width: 300px;">
+        </div>
+        <div id="hotelsList"></div>
+      </div>
+    </div>
+    
+    <div id="settingsSection" class="admin-section">
+      <div class="section-card">
+        <h3 class="section-card-title">GitHub 配置</h3>
+        <div class="config-item">
+          <div class="config-label">连接状态</div>
+          <div class="config-status">
+            <span class="status-dot" id="connectionDot"></span>
+            <span id="connectionStatus">未连接</span>
+          </div>
+        </div>
+        <div class="config-item">
+          <div class="config-label">当前仓库</div>
+          <p style="font-size: 13px; color: var(--text);" id="currentRepo">-</p>
+        </div>
+        <div class="config-note">
+          Token 存储在浏览器会话中，关闭浏览器后将清除。
+        </div>
+      </div>
+      
+      <div class="section-card">
+        <h3 class="section-card-title">数据管理</h3>
+        <button class="btn btn-primary" id="syncDataBtn" style="width: auto; margin-right: 12px;">同步数据</button>
+        <button class="btn btn-logout" style="width: auto; margin-right: 12px;" id="reloadDataBtn">重新加载数据</button>
+        <button class="btn btn-logout" style="width: auto;" id="previewDataBtn">预览 JSON</button>
+        <button class="btn btn-logout" style="width: auto;" id="exportDataBtn">导出 JSON</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="spotModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="spotModalTitle">编辑景点</h3>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">景点名称</label>
+        <input type="text" class="form-input" id="spotModalName">
+      </div>
+      <div class="form-group">
+        <label class="form-label">所在位置</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+          <select class="form-input" id="spotModalProvince" disabled>
+            <option value="">选择省份</option>
+          </select>
+          <select class="form-input" id="spotModalCity" disabled>
+            <option value="">选择城市</option>
+          </select>
+          <select class="form-input" id="spotModalDistrict" disabled>
+            <option value="">选择区县</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">简要描述</label>
+        <input type="text" class="form-input" id="spotModalBrief">
+      </div>
+      <div class="form-group">
+        <label class="form-label">开放时间</label>
+        <input type="text" class="form-input" id="spotModalHours" placeholder="例如：9:00-17:00（周一闭馆）">
+      </div>
+      <div class="form-group">
+        <label class="form-label">门票信息</label>
+        <input type="text" class="form-input" id="spotModalTicket">
+      </div>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="spotModalNeedReservation">
+          <span style="font-size: 13px; color: var(--text);">需要预约</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label">详细介绍</label>
+        <textarea class="form-input" id="spotModalDescription" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="modalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="modalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="dayModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content day-modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="dayModalTitle">编辑每日行程</h3>
+      <button class="modal-close" id="dayModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">天数</label>
+          <input type="number" class="form-input" id="dayModalDay" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">日期</label>
+          <input type="text" class="form-input" id="dayModalDate" readonly style="background: var(--surface-2);">
+        </div>
+        <div class="form-group">
+          <label class="form-label">星期</label>
+          <input type="text" class="form-input" id="dayModalWeekday" readonly style="background: var(--surface-2);">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">行程标题</label>
+        <input type="text" class="form-input" id="dayModalTitleInput">
+      </div>
+      <div class="form-group">
+        <label class="form-label">主题</label>
+        <input type="text" class="form-input" id="dayModalTheme">
+      </div>
+      <div class="form-group">
+        <label class="form-label">景点选择</label>
+        <p style="font-size: 11px; color: var(--text-dim); margin: 4px 0 8px 0;">💡 勾选/双击添加，拖拽调整顺序，点击×移除</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="border: 1px solid var(--border); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border); flex-shrink: 0;">
+              <span style="font-size: 12px; color: var(--text-mid); font-weight: 500;">待选景点</span>
+            </div>
+            <div style="display: flex; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;">
+              <select class="form-input" id="dayModalSpotProvince" style="flex: 1; font-size: 11px; padding: 4px 6px;">
+                <option value="">全部省份</option>
+              </select>
+              <select class="form-input" id="dayModalSpotCity" style="flex: 1; font-size: 11px; padding: 4px 6px;" disabled>
+                <option value="">全部城市</option>
+              </select>
+              <select class="form-input" id="dayModalSpotDistrict" style="flex: 1; font-size: 11px; padding: 4px 6px;" disabled>
+                <option value="">全部区县</option>
+              </select>
+            </div>
+            <div id="dayModalAvailableSpots" style="max-height: 240px; overflow-y: auto; padding: 8px; background: white; flex: 1;">
+            </div>
+          </div>
+          <div style="border: 1px solid var(--border); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border); flex-shrink: 0;">
+              <span style="font-size: 12px; color: var(--text-mid); font-weight: 500;">已选景点</span>
+              <button id="clearAllBtn" onclick="event.stopPropagation(); if(confirm('确定要清空所有已选景点吗？')) { selectedDaySpotIds = []; renderSelectedSpots(); clearAllSpotSelection(); }" style="font-size: 10px; padding: 3px 10px; background: var(--accent); color: white; border: none; border-radius: 3px; cursor: pointer; transition: background 0.2s;">清空</button>
+            </div>
+            <div id="dayModalSelectedSpots" style="max-height: 292px; overflow-y: auto; padding: 8px; background: white; flex: 1;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">选择住宿</label>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="position: relative;">
+            <input type="text" class="form-input" id="dayHotelSearch" placeholder="搜索酒店名称、城市..." oninput="filterDayHotels(); showDayHotelList(true);" style="padding-left: 8px;" onfocus="this.style.paddingLeft = '8px'; $('selectedHotelBadge')?.style.display = 'none'; showDayHotelList(true);" onblur="if(!this.value && selectedDayHotelId) { this.style.paddingLeft = '200px'; $('selectedHotelBadge')?.style.display = 'flex'; } setTimeout(() => { if(!$('dayHotelSearch')?.matches(':focus') && !$('dayAvailableHotels')?.matches(':hover')) { showDayHotelList(false); } }, 200);">
+            <div id="selectedHotelBadge" style="display: none; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); align-items: center; gap: 6px; padding: 4px 8px; background: var(--accent-dim); border-radius: 4px;">
+              <span style="font-size: 12px; color: var(--accent); font-weight: 500;" id="selectedHotelName"></span>
+              <span style="font-size: 11px; color: var(--text-dim);" id="selectedHotelLocation"></span>
+              <button onclick="clearSelectedHotel(); event.stopPropagation();" style="background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px;" title="移除">×</button>
+            </div>
+          </div>
+          <div id="dayAvailableHotels" style="max-height: 200px; overflow-y: auto; padding: 8px; background: white; border: 1px solid var(--border); border-radius: 4px;">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">交通方式</label>
+        <input type="text" class="form-input" id="dayModalTransport">
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注提示</label>
+        <textarea class="form-input" id="dayModalNote" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="dayModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="dayModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="hotelModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="hotelModalTitle">编辑酒店</h3>
+      <button class="modal-close" id="hotelModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">酒店名称</label>
+        <input type="text" class="form-input" id="hotelModalName">
+      </div>
+      <div class="form-group">
+        <label class="form-label">所在位置</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+          <select class="form-input" id="hotelModalProvince">
+            <option value="">选择省份</option>
+          </select>
+          <select class="form-input" id="hotelModalCity" disabled>
+            <option value="">选择城市</option>
+          </select>
+          <select class="form-input" id="hotelModalDistrict" disabled>
+            <option value="">选择区县</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">详细地址</label>
+        <input type="text" class="form-input" id="hotelModalAddress">
+      </div>
+      <div class="form-group">
+        <label class="form-label">联系电话</label>
+        <input type="text" class="form-input" id="hotelModalPhone">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">入住时间</label>
+          <input type="time" class="form-input" id="hotelModalCheckIn">
+        </div>
+        <div class="form-group">
+          <label class="form-label">退房时间</label>
+          <input type="time" class="form-input" id="hotelModalCheckOut">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <textarea class="form-input" id="hotelModalNotes" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="hotelModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="hotelModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="platformModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="platformModalTitle">添加购票平台</h3>
+      <button class="modal-close" id="platformModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">平台名称</label>
+        <input type="text" class="form-input" id="platformModalName">
+      </div>
+      <div class="form-group">
+        <label class="form-label">使用场景</label>
+        <div id="platformUsesContainer">
+          <div class="use-item" style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <input type="text" class="form-input" placeholder="输入使用场景" style="flex: 1;">
+            <button class="btn btn-danger btn-sm" onclick="removeUseItem(this)" style="width: 32px; height: 32px; padding: 0;">-</button>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="addUseBtn" style="margin-top: 8px;">+ 添加使用场景</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="platformModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="platformModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="reservationModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="reservationModalTitle">添加预约提醒</h3>
+      <button class="modal-close" id="reservationModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">选择景点</label>
+        <select class="form-input" id="reservationModalSpot" style="min-height: 40px;">
+          <option value="">请选择需要预约的景点</option>
+        </select>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">💡 仅显示行程中需要预约的景点</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">预约平台</label>
+        <input type="text" class="form-input" id="reservationModalPlatform">
+      </div>
+      <div class="form-group">
+        <label class="form-label">提前预约天数</label>
+        <input type="text" class="form-input" id="reservationModalAdvance">
+      </div>
+      <div class="form-group">
+            <label class="form-label">预约截止日期</label>
+            <input type="text" class="form-input" id="reservationModalDueDate" readonly style="background: var(--surface-2);">
+            <p style="font-size: 11px; color: var(--accent); margin-top: 4px;" id="reservationDueDateHint"></p>
+          </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="reservationModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="reservationModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let appData = {};
+let githubConfig = {
+  token: '',
+  repo: ''
+};
+let tempTrip = null;
+
+const defaultData = {
+  "currentTrip": "jinbei_2026",
+  "trips": {
+    "jinbei_2026": {
+      "id": "jinbei_2026",
+      "title": "晋北八日",
+      "startDate": "2026-06-13",
+      "endDate": "2026-06-20",
+      "subtitle": "穿越千年的建筑艺术巡礼",
+      "description": "从云冈石窟的北魏造像，到应县木塔的千年木构；从悬空寺的悬崖奇迹，到五台山的佛国净土——这是一场跨越时空的文明对话。",
+      "platforms": [
+        {"id": "p1", "name": "大同旅游景区直通车（小程序）", "uses": [{"id": "u1", "desc": "大同古城↔云冈石窟"}, {"id": "u2", "desc": "大同古城↔应县木塔"}, {"id": "u3", "desc": "大同古城↔悬空寺"}]},
+        {"id": "p2", "name": "智行山西（小程序）", "uses": [{"id": "u4", "desc": "应县↔朔州直通车"}, {"id": "u5", "desc": "忻州↔雁门关直通车"}]},
+        {"id": "p3", "name": "晋畅行（微信公众号）", "uses": [{"id": "u6", "desc": "浑源↔五台山班车"}]},
+        {"id": "p4", "name": "12306", "uses": [{"id": "u7", "desc": "朔州东↔大同南高铁"}]}
+      ],
+      "reservations": [
+        {"id": "r1", "spotId": "spot_1", "platform": "大同博物馆微信公众号", "advance": "1"},
+        {"id": "r2", "spotId": "spot_6", "platform": "云冈研究院/云冈文旅小程序", "advance": "7"},
+        {"id": "r3", "spotId": "spot_10", "platform": "官方小程序/携程/美团", "advance": "1-2"},
+        {"id": "r4", "spotId": "spot_13", "platform": "北岳云游小程序", "advance": "7"},
+        {"id": "r5", "spotId": "spot_16", "platform": "五台山游客服务中心微信公众号", "advance": "5"}
+      ],
+      "days": [
+        {"day": 1, "title": "抵达大同 · 古城初探", "theme": "古城初探", "spotIds": ["spot_1", "spot_2", "spot_3", "spot_4", "spot_5"], "accommodation": {"hotelId": "hotel_1"}, "transport": "上海→大同：HO1065 (07:15-10:05)\n机场→酒店：打车", "note": null},
+        {"day": 2, "title": "云冈石窟 + 古城精华", "theme": "石窟艺术", "spotIds": ["spot_6", "spot_7", "spot_8", "spot_9"], "accommodation": {"hotelId": "hotel_1"}, "transport": "大同古城↔云冈石窟：景区直通车\n市区景点：步行/打车", "note": null},
+        {"day": 3, "title": "应县木塔 + 朔州崇福寺", "theme": "木构奇观", "spotIds": ["spot_10", "spot_11", "spot_12"], "accommodation": {"hotelId": "hotel_1"}, "transport": "大同古城→应县木塔：景区直通车\n应县→朔州：智行山西直通车\n崇福寺→朔州东站：打车\n朔州东→大同南：高铁", "note": "应县→朔州直通车班次需提前在智行山西小程序确认"},
+        {"day": 4, "title": "浑源古迹 → 五台山", "theme": "悬崖古建", "spotIds": ["spot_13", "spot_14", "spot_15"], "accommodation": {"hotelId": "hotel_2"}, "transport": "大同→悬空寺：景区直通车\n悬空寺→永安寺圆觉寺：打车\n浑源→五台山：浑源汽车站班车", "note": "浑源→五台山班车15:00发车，需提前到达浑源汽车站"},
+        {"day": 5, "title": "五台山台内", "theme": "佛教圣地", "spotIds": ["spot_16", "spot_17", "spot_18", "spot_19", "spot_20", "spot_21"], "accommodation": {"hotelId": "hotel_2"}, "transport": "台内免费公交 + 步行", "note": "五台山进山必须提前预约！"},
+        {"day": 6, "title": "台外古建 → 忻州", "theme": "唐代遗珍", "spotIds": ["spot_22", "spot_23", "spot_24", "spot_25", "spot_26"], "accommodation": {"hotelId": "hotel_3"}, "transport": "台外：包车/打车", "note": "需要再对比一下包车和打车方案"},
+        {"day": 7, "title": "雁门关 + 忻州古城", "theme": "边塞雄关", "spotIds": ["spot_27", "spot_28", "spot_29", "spot_30"], "accommodation": {"hotelId": "hotel_3"}, "transport": "忻州古城↔雁门关：景区直通车", "note": null},
+        {"day": 8, "title": "返程", "theme": "告别晋北", "spotIds": [], "accommodation": null, "transport": "忻州西→上海：G467 (11:44-19:26)", "note": null}
+      ]
+    }
+  },
+  "hotels": [
+    {"id": "hotel_1", "name": "大同永泰广场漫心酒店", "location": "山西省 - 大同市 - 平城区", "address": "永泰南路与迎宾街交汇处", "phone": "", "checkInTime": "14:00", "checkOutTime": "12:00", "notes": ""},
+    {"id": "hotel_2", "name": "五台山风景区漫心酒店", "location": "山西省 - 忻州市 - 五台县", "address": "五台山风景区台怀镇", "phone": "", "checkInTime": "14:00", "checkOutTime": "12:00", "notes": ""},
+    {"id": "hotel_3", "name": "忻州古城酒吧街亚朵酒店", "location": "山西省 - 忻州市 - 忻府区", "address": "忻州古城酒吧街", "phone": "", "checkInTime": "14:00", "checkOutTime": "12:00", "notes": ""}
+  ],
+  "spots": [
+    {"id": "spot_1", "name": "大同博物馆", "city": "山西省 - 大同市 - 平城区", "brief": "北魏平城文物、司马金龙墓出土文物", "hours": "9:00-17:00（16:00停止入馆，周一不含法定节假日、除夕、正月初一闭馆）", "ticket": "免费", "needReservation": true, "description": "大同市博物馆是国家一级博物馆，是了解北魏平城历史的首选之地。博物馆建筑由崔恺设计，灵感源自大同火山群，造型极具辨识度。馆藏文物超过17万件，涵盖从旧石器时代到明清的各个时期，核心展品包括司马金龙墓出土的仪仗俑群、漆画屏风、北魏蓝玻璃器，以及辽金时期的华严寺琉璃鸱吻等镇馆之宝。馆内设有魏都平城、辽金西京、明清重镇等多个主题展厅，每日提供免费定时人工讲解，是大同必打卡的文化地标。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_2", "name": "九龙壁", "city": "山西省 - 大同市 - 平城区", "brief": "中国现存规模最大的九龙壁", "hours": "全天（外观），内部参观开放时间8:00-18:00", "ticket": "外观免费，内部参观全价票10元/人次、半价票5元/人次", "needReservation": false, "description": "大同九龙壁是全国重点文物保护单位，建于明洪武二十五年（1392年），是明太祖朱元璋第十三子代王朱桂府前的琉璃照壁，也是中国现存规模最大、建筑年代最早的九龙壁，比北京北海九龙壁早250年。壁体高8米、长45.5米、厚2.02米，由426块特制琉璃构件拼砌而成，九条飞龙形态各异、气势磅礴，是中国古代琉璃建筑的巅峰之作。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_3", "name": "四牌楼", "city": "山西省 - 大同市 - 平城区", "brief": "大同古城中轴线地标建筑", "hours": "全天（外观）", "ticket": "免费", "needReservation": false, "description": "四牌楼始建于明代洪武年间，是大同古城的核心地标与交通枢纽，位于古城中轴线的中心位置。建筑由四座相连的牌楼组成，分别对应古城的东、南、西、北四条主街，是明清时期大同城的商业与文化中心。如今依然是古城的核心打卡点，周边汇聚了众多老字号商铺与特色美食，是感受大同古城烟火气的绝佳去处。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_4", "name": "鼓楼", "city": "山西省 - 大同市 - 平城区", "brief": "古城标志性建筑", "hours": "全天（外观）", "ticket": "免费", "needReservation": false, "description": "大同鼓楼始建于明代，是古城内的标志性建筑之一，与钟楼、魁星楼、太平楼并称古城四大名楼，是明清时期大同城的报时中心。建筑为三层砖木结构，造型庄重典雅，飞檐翘角极具古韵。登楼可俯瞰古城街巷风貌，将大同古城的方正格局与市井烟火尽收眼底，是感受大同古城历史底蕴的重要点位。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_5", "name": "代王府", "city": "山西省 - 大同市 - 平城区", "brief": "复建的明代藩王府邸", "hours": "8:30-18:00", "ticket": "白天参观票50元/人次，全天含演出票98-128元/人次", "needReservation": false, "description": "代王府是明代开国皇帝朱元璋第十三子代王朱桂的藩王府邸，始建于明洪武二十五年（公元1392年），是明代规模最大的藩王府之一，被誉为'小故宫'。原王府在明末战乱中损毁，现存建筑为近年来在原址上按明代规制复建而成，整体布局与明代皇宫相似，沿中轴线依次建有端礼门、承运门、承运殿、崇信门、存心殿、长春宫等建筑，两侧建有配殿、廊庑等，完整还原了明代藩王府的规制与风貌。如今的代王府不仅是展示明代藩王文化的重要场所，还定期举办明代宫廷礼仪展演、非遗文化展示等活动，是大同古城内的核心文化旅游景点之一。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_6", "name": "云冈石窟", "city": "山西省 - 大同市 - 云冈区", "brief": "北魏皇家石窟、昙曜五窟", "hours": "旺季（4月1日-10月31日）8:30-17:30（16:30停止入园）；淡季（11月1日-次年3月31日）8:30-17:00（16:00停止入园）", "ticket": "旺季全价票120元/人次，淡季全价票100元/人次，学生票半价", "needReservation": true, "description": "云冈石窟是中国四大石窟之一，世界文化遗产，全国重点文物保护单位，始建于北魏和平元年（公元460年），由北魏皇室高僧昙曜主持开凿，是中国第一处由皇室显贵主持开凿的大型石窟群。石窟依山开凿，东西绵延1公里，现存主要洞窟45个，大小窟龛252个，石雕造像51000余躯，最大的佛像高达17米，最小的仅几厘米。其中昙曜五窟（第16-20窟）是云冈石窟的核心精华，造像气势磅礴、风格浑厚，是北魏佛教艺术的巅峰之作，对后世石窟艺术产生了深远的影响。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_7", "name": "华严寺", "city": "山西省 - 大同市 - 平城区", "brief": "辽代三大寺、露齿菩萨", "hours": "旺季（4月1日-10月31日）8:30-18:00；淡季（11月1日-次年3月31日）8:30-17:30", "ticket": "全价票50元/人次，学生票25元/人次，60周岁以上老人等符合条件人群可免票", "needReservation": false, "description": "华严寺始建于辽重熙七年（公元1038年），是辽金时期华严宗的重要皇家寺院，1961年被国务院公布为第一批全国重点文物保护单位，2014年被评为国家AAAA级旅游景区。寺院坐西向东，占地面积达66000平方米，由上、下二寺组成，现存30余座单体建筑，布局严谨、规模宏大，是中国现存年代较早、保存较完整的辽金寺庙建筑群。寺内核心看点包括：辽金时期最大的佛殿大雄宝殿、被誉为'东方维纳斯'的合掌露齿菩萨彩塑、全国第二大纯木榫卯结构方塔华严宝塔、被梁思成先生誉为'海内孤品'的天宫楼阁藏经柜等，是研究辽金建筑、佛教艺术的重要实物遗存。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_8", "name": "善化寺", "city": "山西省 - 大同市 - 平城区", "brief": "辽金完整古建筑群", "hours": "旺季8:30-18:00，淡季8:30-17:30", "ticket": "免费", "needReservation": false, "description": "善化寺始建于唐开元年间，原名开元寺，辽金时期重修并更名为善化寺，是中国现存最完整、规模最大的辽金时期寺院建筑群之一，1961年被国务院公布为第一批全国重点文物保护单位。寺院坐北朝南，占地面积约13900平方米，沿中轴线依次排列着山门、三圣殿、大雄宝殿，两侧建有普贤阁、文殊阁等建筑，整体布局严谨、气势恢宏，完整保留了辽金时期的建筑风格与规制。寺内大雄宝殿是辽代原构建筑，殿内保存有精美的辽金时期佛造像与壁画，艺术价值极高，与华严寺并称大同古城'双寺'，是感受辽金佛教文化与建筑艺术的必打卡景点。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_9", "name": "大同古城墙", "city": "山西省 - 大同市 - 平城区", "brief": "明代古城墙，夜景灯光秀", "hours": "春秋季（3-5月、9-11月）7:00-22:00（21:40停止检票）；夏季（6-8月）7:00-23:00（22:00停止检票）；冬季（12-2月）7:00-21:00（20:40停止检票）；7:00-17:00城墙全域免费开放", "ticket": "白天登城全域免费，仅需现场扫码登记；夜间17:00后灯会主题区域收费29-49元/人次不等", "needReservation": false, "description": "大同古城墙是中国现存规模最大、保存最完整的明代古城墙之一，始建于北魏时期，现存城墙为明代洪武年间由大将军徐达奉旨督筑，在北魏平城旧城基址上增筑而成。城墙总长7.2公里，高14米，顶宽12米，底宽18米，四周建有护城河、瓮城、箭楼、角楼等完整的防御体系，是明代九边重镇大同的核心防御工程。如今的古城墙不仅是全国重点文物保护单位，更是大同的城市名片，登顶可俯瞰古城全景，傍晚可欣赏落日余晖，夜间可观赏璀璨的灯光秀与灯会，是游览大同的必打卡景点。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_10", "name": "应县木塔", "city": "山西省 - 朔州市 - 应县", "brief": "辽代纯木无钉、世界现存最高古木塔", "hours": "旺季（5-10月）8:00-18:00（17:30停止入园）；淡季（11-4月）8:00-17:00（16:30停止入园）", "ticket": "全价票50元/人次，半价票25元/人次，60周岁以上老人等符合条件人群可免票", "needReservation": true, "description": "应县木塔全称佛宫寺释迦塔，位于山西省朔州市应县佛宫寺内，始建于辽清宁二年（公元1056年），是中国现存最高、最古老的纯木结构楼阁式塔，与意大利比萨斜塔、巴黎埃菲尔铁塔并称'世界三大奇塔'，2016年被吉尼斯世界纪录认定为世界最高的木塔。塔高67.31米，底层直径30.27米，呈平面八角形，共五层六檐，全塔无一颗铁钉，全部由榫卯结构搭建而成，历经近千年风雨、多次地震依然屹立不倒，是中国古代木结构建筑的巅峰之作。塔内供奉着释迦牟尼佛真身舍利，现存有辽代彩塑、壁画、经卷等珍贵文物，具有极高的历史、艺术与科学价值。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_11", "name": "净土寺", "city": "山西省 - 朔州市 - 应县", "brief": "金代天宫楼阁藻井", "hours": "8:00-18:00", "ticket": "15元/人次", "needReservation": false, "description": "净土寺位于山西省朔州市应县，与应县木塔相距仅10分钟步行路程，始建于金天会二年（1124年），是金代著名的佛教寺院，全国重点文物保护单位。寺院现存大雄宝殿为金代原构建筑，殿内的藻井是其核心精华，被誉为'金代藻井之冠'，藻井为八角形，层层叠涩，雕刻精美，彩绘绚丽，是中国古代建筑藻井艺术的杰出代表。寺内还保存有金代的佛造像、壁画等珍贵文物，整体建筑风格古朴雄浑，是研究金代建筑与佛教艺术的重要实物遗存。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_12", "name": "崇福寺", "city": "山西省 - 朔州市 - 朔城区", "brief": "金代减柱造大殿", "hours": "8:00-18:00", "ticket": "免费", "needReservation": false, "description": "崇福寺位于山西省朔州市朔城区，始建于唐麟德二年（公元665年），是中国现存规模较大、保存较完整的辽金时期寺院建筑群之一，全国重点文物保护单位。寺院坐北朝南，占地面积约23400平方米，沿中轴线依次排列着山门、天王殿、大雄宝殿、弥陀殿、观音殿等建筑，两侧建有配殿、廊庑等，整体布局严谨、气势恢宏。其中弥陀殿为金代原构建筑，是中国现存最大的金代佛殿之一，殿内保存有精美的金代彩塑、壁画，艺术价值极高。崇福寺历经唐、辽、金、元、明、清各代修缮，完整保留了不同时期的建筑风格，是研究中国古代建筑发展史的重要实物遗存。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_13", "name": "悬空寺", "city": "山西省 - 大同市 - 浑源县", "brief": "北魏悬崖古建、佛道儒三教合一", "hours": "8:30-16:30", "ticket": "入园票15元/人次，登临票100元/人次（每日限量发售，需提前预约）", "needReservation": true, "description": "悬空寺位于山西省大同市浑源县恒山金龙峡西侧翠屏峰的峭壁上，始建于北魏太和十五年（公元491年），是中国现存最著名的高空摩崖木结构建筑，被誉为'世界十大奇险建筑之一'，全国重点文物保护单位。寺院悬空而建，距地面最高处约50米，全部建筑镶嵌在悬崖峭壁之上，仅靠数根木柱支撑，历经1500余年风雨、多次地震依然完好无损，是中国古代建筑史上的奇迹。寺院整体布局精巧，融合了儒、释、道三教文化，寺内供奉着释迦牟尼、老子、孔子等塑像，现存有北魏时期的佛造像、壁画等珍贵文物。登临悬空寺，可俯瞰金龙峡全景，感受悬崖之上的惊险与震撼，是北岳恒山的核心必打卡景点。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_14", "name": "永安禅寺", "city": "山西省 - 大同市 - 浑源县", "brief": "元代壁画艺术", "hours": "8:00-18:00", "ticket": "免费", "needReservation": false, "description": "永安禅寺位于山西省大同市浑源县，始建于金代，是北岳恒山脚下的著名佛教寺院，全国重点文物保护单位。寺院现存建筑多为元代重修，整体布局严谨，沿中轴线依次排列着山门、天王殿、大雄宝殿、法堂等建筑，两侧建有配殿、廊庑等。其中大雄宝殿为元代原构建筑，殿内保存有精美的元代壁画，是其核心精华，壁画内容丰富，色彩绚丽，人物形象生动，是元代佛教壁画的杰出代表。永安禅寺历史悠久，文化底蕴深厚，是研究金元时期建筑与佛教艺术的重要实物遗存，也是游览北岳恒山的重要配套景点。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_15", "name": "圆觉寺", "city": "山西省 - 大同市 - 浑源县", "brief": "辽代密檐式砖塔", "hours": "8:00-18:00", "ticket": "免费", "needReservation": false, "description": "圆觉寺位于山西省大同市浑源县，与永安禅寺相邻，始建于唐代，是北岳恒山脚下的著名佛教寺院。寺院现存建筑多为明清时期重修，整体布局精巧，环境清幽，沿中轴线依次排列着山门、天王殿、大雄宝殿、圆觉殿等建筑。寺内核心看点为圆觉殿，殿内供奉着十二圆觉菩萨像，塑像造型精美，神态生动，是明代彩塑艺术的精品。圆觉寺历史悠久，香火旺盛，是当地著名的佛教活动场所，也是游览浑源的重要文化景点。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_16", "name": "五台山风景区", "city": "山西省 - 忻州市 - 五台县", "brief": "中国佛教四大名山之首、世界文化景观遗产", "hours": "全天开放（入山）", "ticket": "旺季145元/人（4月1日-10月31日），需提前预约进山门票", "needReservation": true, "description": "五台山位于山西省忻州市五台县，是中国佛教四大名山之首、世界文化景观遗产、国家AAAAA级旅游景区、世界遗产名录。因五座台状山峰而得名（五台：东台望海峰、西台挂月峰、南台锦绣峰、北台叶斗峰、中台翠岩峰），又称'清凉山'，相传为文殊菩萨的道场。五台山是中华文明的重要象征之一，自东汉起便是佛教圣地，现存寺庙47处，涵盖了从汉传佛教到藏传佛教的各种宗教文化，是世界上罕见的将自然风光、宗教文化、古建筑艺术完美融合的旅游胜地。游客需提前通过'五台山游客服务中心'微信公众号预约进山门票，每日限量4万人。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_17", "name": "显通寺", "city": "山西省 - 忻州市 - 五台县", "brief": "五台山最古寺院、铜殿", "hours": "8:00-17:30", "ticket": "10元/人次", "needReservation": false, "description": "显通寺又称大显通寺，位于山西省忻州市五台县五台山台怀镇北侧，是五台山五大禅处之一、全山寺院之首，与洛阳白马寺同为中国最早的佛寺之一，全国重点文物保护单位。寺院始建于东汉永平年间（公元69年），初名大孚灵鹫寺，历经北魏、唐、明、清各代扩建与重修，现存建筑多为明清时期所建，整体坐北朝南，占地约8万平方米，共有殿堂楼阁禅房僧舍等400余间，布局严谨、规模宏大。寺内核心看点包括：明代铜殿（全国仅存两座）、无量殿（砖雕精美）、千钵文殊殿、大雄宝殿等，是研究中国古代建筑与佛教文化的重要实物遗存，也是五台山朝圣的必打卡核心寺院。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_18", "name": "塔院寺", "city": "山西省 - 忻州市 - 五台县", "brief": "大白塔、五台山标志", "hours": "8:00-17:30", "ticket": "10元/人次", "needReservation": false, "description": "塔院寺位于山西省忻州市五台县五台山台怀镇，是五台山五大禅处之一，因院内的大白塔而得名，是五台山的标志性建筑，全国重点文物保护单位。寺院始建于唐代，明代万历年间重修，现存建筑多为明清时期所建，整体坐北朝南，沿中轴线依次排列着山门、天王殿、大雄宝殿、藏经阁等建筑，核心建筑为位于寺院中央的大白塔。大白塔全称释迦文佛真身舍利塔，始建于元代大德五年（1301年），塔高56.3米，呈平面八角形，为藏式覆钵式塔，塔内供奉着释迦牟尼佛的真身舍利，是五台山的核心地标。来到塔院寺，顺时针绕塔三圈祈福是当地的传统习俗，也是五台山朝圣的重要环节。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_19", "name": "菩萨顶", "city": "山西省 - 忻州市 - 五台县", "brief": "清代皇家寺院、黄庙领袖", "hours": "8:00-17:30", "ticket": "10元/人次", "needReservation": false, "description": "菩萨顶位于山西省忻州市五台县五台山台怀镇北侧的灵鹫峰上，是五台山五大禅处之一，也是五台山黄庙（藏传佛教寺院）的领袖寺院，被誉为'小布达拉宫'，全国重点文物保护单位。寺院始建于北魏孝文帝时期，明代永乐年间重修，清代康熙、乾隆年间多次扩建，现存建筑多为清代所建，整体坐北朝南，占地约3万平方米，共有殿堂楼阁禅房僧舍等430余间，布局严谨、气势恢宏。寺院建筑采用清代皇家宫式规制，屋顶全部使用黄琉璃瓦，是五台山唯一使用皇家建筑规制的寺院。寺内核心看点包括：康熙行宫、乾隆御碑、大雄宝殿、文殊殿等，108级台阶是其标志性景观，登顶可俯瞰台怀镇全景，是五台山朝圣的必打卡寺院。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_20", "name": "殊像寺", "city": "山西省 - 忻州市 - 五台县", "brief": "文殊菩萨主殿", "hours": "8:00-17:00", "ticket": "免费", "needReservation": false, "description": "殊像寺位于山西省忻州市五台县五台山台怀镇西南侧，是五台山五大禅处之一，因寺内供奉着五台山最大的文殊菩萨像而得名，是祈求智慧与学业的圣地，全国重点文物保护单位。寺院始建于唐代，明代弘治年间重修，现存建筑多为明清时期所建，整体坐北朝南，占地约6400平方米，沿中轴线依次排列着山门、天王殿、大雄宝殿、藏经阁等建筑。寺内核心看点为大雄宝殿内的文殊菩萨彩塑，像高9.87米，是五台山最大的文殊菩萨像，塑像面容慈祥，神态生动，是明代彩塑艺术的精品，其中荞麦面文殊像更是镇寺之宝。殊像寺是五台山香火最旺的寺院之一，也是学生群体祈求学业顺利、智慧增长的首选朝拜地。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_21", "name": "黛螺顶", "city": "山西省 - 忻州市 - 五台县", "brief": "小朝台、1080级台阶", "hours": "8:00-18:00", "ticket": "免费，缆车单程50元/人次、往返85元/人次", "needReservation": false, "description": "黛螺顶位于山西省忻州市五台县五台山台怀镇东侧的黛螺峰上，是五台山著名的佛教寺院，也是'小朝台'的核心目的地，被誉为'五台山第一胜境'。寺院始建于唐代，明代万历年间重修，现存建筑多为明清时期所建，整体坐北朝南，沿中轴线依次排列着山门、天王殿、大雄宝殿、文殊殿等建筑。黛螺顶的核心特色是1080级台阶，从山脚一直延伸到山顶，相传攀登1080级台阶可以消除108种烦恼，是五台山朝圣的重要环节。登顶黛螺顶，可360度俯瞰五台山台怀镇全景，五座主峰尽收眼底，风光壮丽，是五台山必打卡的景点之一。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_22", "name": "佛光寺", "city": "山西省 - 忻州市 - 五台县", "brief": "唐代木构巅峰", "hours": "8:00-17:30", "ticket": "免费", "needReservation": false, "description": "佛光寺位于山西省忻州市五台县豆村镇佛光村，是五台山著名的佛教寺院，也是中国现存最古老的唐代木结构建筑之一，全国重点文物保护单位，1937年由梁思成先生发现并确认为唐代建筑，打破了日本学者'中国已无唐代木结构建筑'的断言。寺院始建于北魏孝文帝时期，唐大中十一年（公元857年）重修，现存东大殿为唐代原构建筑，是中国现存规模最大、保存最完整的唐代木结构建筑，被誉为'中国古建筑第一瑰宝'。东大殿面阔七间，进深四间，单檐庑殿顶，全殿无一颗铁钉，全部由榫卯结构搭建而成，历经1100余年风雨依然完好无损。殿内保存有唐代的佛造像、壁画、题记等珍贵文物，艺术价值极高，是研究唐代建筑、佛教艺术的重要实物遗存。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_23", "name": "广济寺", "city": "山西省 - 忻州市 - 五台县", "brief": "元代建筑遗存", "hours": "8:00-17:30，夜间18:30-21:00亮灯", "ticket": "免费", "needReservation": false, "description": "广济寺位于山西省忻州市五台县五台县城内，是五台山著名的佛教寺院，全国重点文物保护单位。寺院始建于元代，明代成化年间重修，现存大雄宝殿为元代原构建筑，是中国现存保存较完整的元代木结构建筑之一。大殿面阔五间，进深三间，单檐庑殿顶，整体建筑风格庄重典雅，完整保留了元代建筑的规制与特色。寺内还保存有元代的佛造像、壁画等珍贵文物，艺术价值极高。如今的广济寺不仅是当地著名的佛教活动场所，其夜间的灯光景观更是一绝，黄墙暖灯，禅意绝美，是五台县城必打卡的夜景景点。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_24", "name": "延庆寺", "city": "山西省 - 忻州市 - 五台县", "brief": "金代原构", "hours": "8:00-17:30", "ticket": "免费", "needReservation": false, "description": "延庆寺位于山西省忻州市五台县，是五台山著名的佛教寺院，全国重点文物保护单位。寺院始建于唐代，金代大定年间重修，现存大殿为金代原构建筑，是中国现存保存较完整的金代木结构建筑之一。大殿面阔三间，进深三间，单檐歇山顶，整体建筑风格古朴雄浑，完整保留了金代建筑的规制与特色。殿内保存有金代的佛造像、壁画等珍贵文物，艺术价值极高，是研究金代建筑与佛教艺术的重要实物遗存。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_25", "name": "南禅寺", "city": "山西省 - 忻州市 - 五台县", "brief": "中国现存最古老唐代木构建筑", "hours": "8:00-17:30", "ticket": "免费", "needReservation": false, "description": "南禅寺位于山西省忻州市五台县阳白乡李家庄，是中国现存最古老的唐代木结构建筑，全国重点文物保护单位，1953年被发现并确认为唐代建筑，比佛光寺东大殿还要早75年。寺院始建于东汉时期，唐建中三年（公元782年）重修，现存大佛殿为唐代原构建筑，是中国现存年代最早的木结构建筑。大佛殿面阔三间，进深三间，单檐歇山顶，全殿无一颗铁钉，全部由榫卯结构搭建而成，历经1200余年风雨、多次地震依然屹立不倒，是中国古代木结构建筑的活化石。殿内保存有唐代的佛造像、壁画等珍贵文物，塑像面容丰满，神态生动，是唐代彩塑艺术的精品，具有极高的历史、艺术与科学价值。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_26", "name": "洪福寺", "city": "山西省 - 忻州市 - 五台县", "brief": "宋代彩塑", "hours": "8:00-17:30", "ticket": "免费", "needReservation": false, "description": "洪福寺位于山西省忻州市五台县，是五台山著名的佛教寺院，全国重点文物保护单位。寺院始建于宋代，金代皇统年间重修，现存大殿为金代原构建筑，是中国现存保存较完整的金代木结构建筑之一。大殿面阔三间，进深三间，单檐歇山顶，整体建筑风格古朴雄浑，完整保留了金代建筑的规制与特色。殿内保存有精美的宋代彩塑，塑像造型精美，神态生动，是宋代彩塑艺术的精品，艺术价值极高，是研究宋代佛教艺术与金代建筑的重要实物遗存。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_27", "name": "雁门关", "city": "山西省 - 忻州市 - 代县", "brief": "中华第一关", "hours": "8:00-18:00", "ticket": "90元/人次", "needReservation": false, "description": "雁门关位于山西省忻州市代县以北的雁门山中，是中国古代最著名的边塞关隘之一，被誉为'中华第一关'，全国重点文物保护单位，也是世界文化遗产万里长城的重要组成部分。关隘始建于战国时期，历经秦、汉、隋、唐、宋、明各代修缮与扩建，现存关城为明代洪武年间所建，整体布局严谨，防御体系完整，由关城、瓮城、围城、烽火台等部分组成，是中国古代边塞防御工程的杰出代表。雁门关是中原王朝与北方游牧民族的分界线，也是古代丝绸之路的重要通道，历史上无数名将在此征战，留下了众多可歌可泣的英雄故事，是中国边塞文化的核心象征。如今的雁门关不仅是重要的历史文化遗产，也是著名的旅游景区，登临关楼，可俯瞰雁门山全景，感受古代边塞的雄浑与悲壮，是山西必打卡的历史文化景点。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_28", "name": "秀容书院", "city": "山西省 - 忻州市 - 忻府区", "brief": "清代山西最高学府", "hours": "8:30-17:30", "ticket": "免费", "needReservation": false, "description": "秀容书院位于山西省忻州市忻府区，始建于清乾隆四十年（公元1775年），是清代山西的最高学府，也是山西现存保存最完整的清代书院之一，全国重点文物保护单位。书院整体坐北朝南，占地约15000平方米，沿中轴线依次排列着山门、讲堂、藏书楼、文昌阁等建筑，两侧建有配殿、廊庑、学舍等，整体布局严谨、规模宏大，完整保留了清代书院的规制与风貌。秀容书院是清代山西文化教育的中心，培养了众多优秀的人才，对山西近代文化教育的发展产生了深远的影响。如今的秀容书院不仅是展示清代书院文化的重要场所，也是忻州的核心文化地标，是感受中国传统书院文化的绝佳去处。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_29", "name": "泰山庙巷", "city": "山西省 - 忻州市 - 忻府区", "brief": "忻州古城核心美食街巷，市井烟火聚集地", "hours": "全天开放，商铺营业时间多为9:00-22:00", "ticket": "免费", "needReservation": false, "description": "泰山庙巷是忻州古城内最核心的美食与市井文化聚集地，因巷旁的泰山庙而得名，是古城内烟火气最浓厚的街巷。街巷全长约300米，两侧汇集了忻州本地各类特色小吃、老字号商铺、特色文创小店，从地道的忻州莜面、定襄蒸肉、保德碗托，到网红特色小吃、传统手作，一应俱全。逛古建之余，可在此一站式品尝地道的晋北风味，感受老城的市井烟火与生活气息，是忻州古城游览中不可错过的美食打卡地。", "photos": [], "review": "", "rating": null},
+    {"id": "spot_30", "name": "明月楼", "city": "山西省 - 忻州市 - 忻府区", "brief": "忻州古城中心地标，网红打卡楼阁", "hours": "全天开放（外观），内部参观8:30-17:30", "ticket": "免费", "needReservation": false, "description": "明月楼是忻州古城的中心地标建筑，坐落于古城南北主大街的核心位置，是古城游览动线的必经之处。建筑为红墙黛瓦的中式多层楼阁，造型古朴雅致，飞檐翘角极具晋北古建风韵，白天可欣赏其精巧的建筑结构，夜幕降临后灯光点缀，氛围感拉满，是古城内最热门的网红拍照打卡点之一。明月楼周边街巷开阔，紧邻古城核心商业区，登楼可俯瞰古城南北主街的完整风貌，是感受忻州古城格局与烟火气的绝佳点位。", "photos": [], "review": "", "rating": null}
+  ]
+};
+
+function formatTripDates(startDate, endDate) {
+  if (!startDate || !endDate) return '';
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  return `${start.getFullYear()}.${start.getMonth() + 1}.${start.getDate()} — ${end.getFullYear()}.${end.getMonth() + 1}.${end.getDate()}`;
+}
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+function showLoading() {
+  $('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+  $('loadingOverlay').style.display = 'none';
+}
+
+function showError(msg) {
+  const errorEl = $('loginError');
+  errorEl.textContent = msg;
+  errorEl.style.display = 'block';
+}
+
+function hideError() {
+  $('loginError').style.display = 'none';
+}
+
+async function verifyGitHubConfig(token, repo) {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('GitHub API Error:', response.status, errorText);
+      return { ok: false, status: response.status, message: errorText };
+    }
+    
+    const data = await response.json();
+    return { ok: true, data };
+  } catch (error) {
+    console.error('Network Error:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideError();
+  
+  const token = $('tokenInput').value.trim();
+  const repo = $('repoInput').value.trim();
+  
+  if (!token || !repo) {
+    showError('请填写完整信息');
+    return;
+  }
+  
+  if (!repo.includes('/')) {
+    showError('仓库名称格式错误，请使用「用户名/仓库名」格式（例如：yourname/itinerary）');
+    return;
+  }
+  
+  $('loginBtn').disabled = true;
+  $('loginBtn').textContent = '验证中...';
+  
+  const result = await verifyGitHubConfig(token, repo);
+  
+  if (result.ok) {
+    githubConfig = { token, repo };
+    sessionStorage.setItem('githubConfig', JSON.stringify(githubConfig));
+    showAdminPage();
+  } else {
+    let errorMsg = 'Token 或仓库名称无效，请检查后重试';
+    if (result.status === 401) {
+      errorMsg = 'Token 无效或已过期，请检查 Token 是否正确';
+    } else if (result.status === 404) {
+      errorMsg = '仓库不存在，请检查仓库名称是否正确（格式：用户名/仓库名）';
+    } else if (result.status === 403) {
+      errorMsg = '访问被拒绝，请确认 Token 有 repo 权限';
+    } else if (result.error) {
+      errorMsg = `网络错误：${result.error}`;
+    }
+    showError(errorMsg);
+    $('loginBtn').disabled = false;
+    $('loginBtn').textContent = '进入后台';
+  }
+});
+
+$('skipLoginBtn').addEventListener('click', () => {
+  githubConfig = { token: 'skipped', repo: 'skipped' };
+  sessionStorage.setItem('githubConfig', JSON.stringify(githubConfig));
+  showAdminPage();
+});
+
+function showAdminPage() {
+  $('loginPage').style.display = 'none';
+  $('adminPage').classList.add('active');
+  hideLoading();
+  
+  updateConnectionStatus();
+  loadData();
+}
+
+const locationData = {
+  "山西省": {
+    "大同市": ["平城区", "浑源县", "云冈区", "新荣区", "左云县", "阳高县", "天镇县"],
+    "朔州市": ["朔城区", "应县", "山阴县", "右玉县", "怀仁市"],
+    "忻州市": ["忻府区", "五台县", "代县", "定襄县", "繁峙县", "原平市"]
+  }
+};
+
+function renderUI() {
+  renderTripsList();
+  setTimeout(() => {
+    renderSpotsList();
+    renderHotelsList();
+    renderDaysList();
+    renderPlatformsList();
+    renderReservationsList();
+  }, 100);
+}
+
+async function loadData() {
+  // 优先尝试从 JSON 文件加载最新数据
+  try {
+    const response = await fetch('data/itinerary.json');
+    
+    if (response.ok) {
+      const jsonData = await response.json();
+      const savedData = localStorage.getItem('appData');
+      
+      // 如果 localStorage 没有数据，直接使用 JSON 文件数据
+      if (!savedData) {
+        appData = jsonData;
+        localStorage.setItem('appData', JSON.stringify(appData));
+        renderUI();
+        return;
+      }
+      
+      // 如果有 localStorage 数据，提示用户是否更新
+      if (confirm('检测到新的行程数据，是否更新？')) {
+        appData = jsonData;
+        localStorage.setItem('appData', JSON.stringify(appData));
+        renderUI();
+        return;
+      }
+    }
+  } catch (error) {
+    // fetch 失败（如 file:// 协议限制），继续使用 localStorage 或 defaultData
+  }
+  
+  // 使用 localStorage 数据
+  const savedData = localStorage.getItem('appData');
+  if (savedData) {
+    appData = JSON.parse(savedData);
+    
+    // 数据迁移
+    let dataUpdated = false;
+    if (appData.days) {
+      const currentTripId = appData.currentTrip;
+      if (currentTripId && appData.trips?.[currentTripId] && !appData.trips[currentTripId].days) {
+        appData.trips[currentTripId].days = appData.days;
+      }
+      delete appData.days;
+      dataUpdated = true;
+    }
+    
+    if (appData.trips) {
+      Object.keys(appData.trips).forEach(tripId => {
+        const trip = appData.trips[tripId];
+        if (!trip.days) { trip.days = []; dataUpdated = true; }
+        if (!trip.platforms) { trip.platforms = []; dataUpdated = true; }
+        if (!trip.reservations) { trip.reservations = []; dataUpdated = true; }
+      });
+    }
+    
+    if (dataUpdated) {
+      localStorage.setItem('appData', JSON.stringify(appData));
+    }
+    
+    renderUI();
+    return;
+  }
+  
+  // 兜底：使用 defaultData
+  appData = JSON.parse(JSON.stringify(defaultData));
+  localStorage.setItem('appData', JSON.stringify(appData));
+  renderUI();
+}
+
+function loadTripFormData() {
+  if (!appData.trips || !appData.currentTrip) return;
+  
+  const trip = appData.trips[appData.currentTrip] || {};
+  
+  $('tripTitle').value = trip.title || '';
+  
+  $('tripStartDate').value = trip.startDate || '';
+  $('tripEndDate').value = trip.endDate || '';
+  
+  $('tripSubtitle').value = trip.subtitle || '';
+  $('tripDescription').value = trip.description || '';
+  
+  $('spotsCount').textContent = appData.spots ? appData.spots.length : 0;
+  $('hotelsCount').textContent = appData.hotels ? appData.hotels.length : 0;
+  $('daysCount').textContent = getCurrentTripDays().length;
+}
+
+function updateConnectionStatus() {
+  const dot = $('connectionDot');
+  const status = $('connectionStatus');
+  const repoEl = $('currentRepo');
+  
+  if (githubConfig.token && githubConfig.repo) {
+    dot.classList.remove('disconnected');
+    status.textContent = '已连接';
+    repoEl.textContent = githubConfig.repo;
+  } else {
+    dot.classList.add('disconnected');
+    status.textContent = '未连接';
+    repoEl.textContent = '-';
+  }
+}
+
+function calculateTripDays(startDate, endDate) {
+  if (!startDate || !endDate) return 0;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diffTime = end - start;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  return diffDays > 0 ? diffDays : 0;
+}
+
+function renderTripsList() {
+  const listEl = $('tripsList');
+  if (!appData.trips || Object.keys(appData.trips).length === 0) {
+    listEl.innerHTML = `
+      <div class="no-trips">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        <p>暂无行程</p>
+        <p style="font-size: 12px; margin-top: 8px;">点击右上角按钮创建新行程</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const tripsGrid = document.createElement('div');
+  tripsGrid.className = 'trips-grid';
+  
+  tripsGrid.innerHTML = Object.values(appData.trips).map(trip => {
+    let daysCount = calculateTripDays(trip.startDate, trip.endDate);
+    if (daysCount === 0 && trip.days) {
+      daysCount = trip.days.length;
+    }
+    const dates = trip.startDate && trip.endDate 
+      ? formatTripDates(trip.startDate, trip.endDate) 
+      : '';
+    
+    return `
+      <div class="trip-card">
+        <div class="trip-card-main" onclick="selectTrip('${trip.id}')">
+          <div class="trip-card-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;"><span style="color: white; font-size: 14px; letter-spacing: 2px;">${trip.title}</span></div>
+          <div class="trip-card-content">
+            <h3 class="trip-card-title">${trip.title}</h3>
+            <p class="trip-card-dates">${dates}</p>
+            <p class="trip-card-desc">${trip.subtitle || trip.description || ''}</p>
+            <div class="trip-card-stats">
+              <span class="trip-card-stat">${daysCount}天</span>
+            </div>
+          </div>
+        </div>
+        <div class="trip-card-actions">
+          <button class="trip-card-action-btn" onclick="viewTrip('${trip.id}')" title="预览行程">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </button>
+          <button class="trip-card-action-btn" onclick="selectTrip('${trip.id}')" title="编辑行程">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="trip-card-action-btn" data-action="delete" onclick="confirmDeleteTrip('${trip.id}', event)" title="删除行程">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18"/>
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  listEl.innerHTML = '';
+  listEl.appendChild(tripsGrid);
+}
+
+function viewTrip(tripId) {
+  localStorage.setItem('viewingTripId', tripId);
+  window.open('preview.html', '_blank');
+}
+
+function selectTrip(tripId) {
+  appData.currentTrip = tripId;
+  localStorage.setItem('appData', JSON.stringify(appData));
+  
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  $('tripDetailSection').classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  
+  loadTripFormData();
+  renderDaysList();
+  renderPlatformsList();
+  renderReservationsList();
+}
+
+function confirmDeleteTrip(tripId, event) {
+  event.stopPropagation();
+  
+  const trip = appData.trips[tripId];
+  if (!trip) return;
+  
+  if (confirm(`确定要删除行程「${trip.title}」吗？此操作不可恢复。`)) {
+    deleteTrip(tripId);
+  }
+}
+
+function deleteTrip(tripId) {
+  delete appData.trips[tripId];
+  
+  // 如果删除的是当前行程，清空当前选择
+  if (appData.currentTrip === tripId) {
+    const tripIds = Object.keys(appData.trips);
+    appData.currentTrip = tripIds.length > 0 ? tripIds[0] : '';
+  }
+  
+  localStorage.setItem('appData', JSON.stringify(appData));
+  renderTripsList();
+  
+  showToast('行程已删除', 'success');
+}
+
+function getCurrentTripPlatforms() {
+  const trip = appData.trips?.[appData.currentTrip];
+  return trip?.platforms || [];
+}
+
+function getCurrentTripReservations() {
+  const trip = appData.trips?.[appData.currentTrip];
+  return trip?.reservations || [];
+}
+
+function getCurrentTripDays() {
+  const trip = appData.trips?.[appData.currentTrip];
+  return trip?.days || [];
+}
+
+function setCurrentTripDays(days) {
+  if (appData.trips?.[appData.currentTrip]) {
+    appData.trips[appData.currentTrip].days = days;
+  }
+}
+
+function switchTripTab(tabName) {
+  const tabs = document.querySelectorAll('.trip-tab');
+  const panels = document.querySelectorAll('.trip-panel');
+  
+  tabs.forEach(tab => {
+    if (tab.dataset.tab === tabName) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+  
+  const panelMap = {
+    basic: 'basicPanel',
+    days: 'daysPanel',
+    platforms: 'platformsPanel',
+    reservations: 'reservationsPanel'
+  };
+  
+  const targetPanelId = panelMap[tabName];
+  if (targetPanelId) {
+    panels.forEach(panel => {
+      if (panel.id === targetPanelId) {
+        panel.classList.add('active');
+      } else {
+        panel.classList.remove('active');
+      }
+    });
+  }
+  
+  if (tabName === 'reservations') {
+    renderReservationsList();
+  }
+}
+
+function renderPlatformsList() {
+  const listEl = $('platformsList');
+  const countEl = $('platformsCount');
+  const platforms = getCurrentTripPlatforms();
+  
+  if (countEl) countEl.textContent = platforms.length;
+  
+  if (platforms.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 20px;">暂无购票平台</p>';
+    return;
+  }
+  
+  listEl.innerHTML = platforms.map(p => {
+    const uses = p.uses || [{ desc: p.use }];
+    const usesHtml = uses.map(u => `<span style="display: inline-block; background: var(--bg-secondary); padding: 4px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; margin-bottom: 4px;">${u.desc || u}</span>`).join('');
+    return `
+      <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+        <div>
+          <p style="font-size: 14px; font-weight: 500; color: var(--text);">${p.name}</p>
+          <div style="margin-top: 8px;">${usesHtml}</div>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+          <button class="btn btn-logout" style="width: auto; padding: 6px 12px; font-size: 11px;" onclick="openPlatformModal('${p.id}'); return false;">编辑</button>
+          <button class="btn btn-logout" style="width: auto; padding: 6px 12px; font-size: 11px; color: #c00; border-color: rgba(204,0,0,0.3);" onclick="deletePlatform('${p.id}')">删除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderReservationsList() {
+  const listEl = $('reservationsList');
+  const countEl = $('reservationsCount');
+  const reservations = getCurrentTripReservations();
+  
+  if (countEl) countEl.textContent = reservations.length;
+  
+  if (reservations.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 20px;">暂无预约提醒</p>';
+    return;
+  }
+  
+  listEl.innerHTML = reservations.map(r => {
+    const spot = appData.spots?.find(s => s.id === r.spotId);
+    const dueDate = calculateDueDate(r.spotId, r.advance);
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border);">
+        <div>
+          <p style="font-size: 14px; font-weight: 500; color: var(--text);">${spot?.name || r.spotId}</p>
+          <p style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">${r.platform} · 提前${r.advance}天 · 截止：${dueDate || '无法计算'}</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-logout" style="width: auto; padding: 6px 12px; font-size: 11px;" onclick="openReservationModal('${r.id}'); return false;">编辑</button>
+          <button class="btn btn-logout" style="width: auto; padding: 6px 12px; font-size: 11px; color: #c00; border-color: rgba(204,0,0,0.3);" onclick="deleteReservation('${r.id}')">删除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+let editingPlatformId = null;
+let editingReservationId = null;
+
+function openPlatformModal(platformId = null) {
+  editingPlatformId = platformId;
+  const modal = $('platformModal');
+  const titleEl = $('platformModalTitle');
+  const nameEl = $('platformModalName');
+  const containerEl = $('platformUsesContainer');
+  
+  containerEl.innerHTML = '';
+  
+  if (platformId) {
+    titleEl.textContent = '编辑购票平台';
+    const platform = getCurrentTripPlatforms().find(p => p.id === platformId);
+    if (platform) {
+      nameEl.value = platform.name;
+      const uses = platform.uses || [{ desc: platform.use }];
+      uses.forEach((use, index) => {
+        addUseItem(use.desc || use, index === uses.length - 1);
+      });
+    }
+  } else {
+    titleEl.textContent = '添加购票平台';
+    nameEl.value = '';
+    addUseItem('', true);
+  }
+  
+  modal.style.display = 'flex';
+}
+
+function addUseItem(value = '', isLast = false) {
+  const containerEl = $('platformUsesContainer');
+  const useItem = document.createElement('div');
+  useItem.className = 'use-item';
+  useItem.style.display = 'flex';
+  useItem.style.gap = '8px';
+  useItem.style.marginBottom = '8px';
+  
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'form-input';
+  input.placeholder = '输入使用场景';
+  input.style.flex = '1';
+  input.value = value;
+  
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'btn btn-danger btn-sm';
+  removeBtn.innerHTML = '-';
+  removeBtn.style.width = '32px';
+  removeBtn.style.height = '32px';
+  removeBtn.style.padding = '0';
+  removeBtn.onclick = () => removeUseItem(removeBtn);
+  
+  useItem.appendChild(input);
+  useItem.appendChild(removeBtn);
+  containerEl.appendChild(useItem);
+  
+  // 确保至少有一个输入框
+  updateRemoveButtons();
+}
+
+function removeUseItem(btn) {
+  const containerEl = $('platformUsesContainer');
+  const items = containerEl.querySelectorAll('.use-item');
+  
+  if (items.length > 1) {
+    btn.parentElement.remove();
+    updateRemoveButtons();
+  }
+}
+
+function updateRemoveButtons() {
+  const containerEl = $('platformUsesContainer');
+  const items = containerEl.querySelectorAll('.use-item');
+  const removeBtns = containerEl.querySelectorAll('.btn-danger');
+  
+  removeBtns.forEach((btn, index) => {
+    btn.style.display = items.length > 1 ? 'block' : 'none';
+  });
+}
+
+function closePlatformModal() {
+  $('platformModal').style.display = 'none';
+  editingPlatformId = null;
+}
+
+function savePlatform() {
+  const name = $('platformModalName').value.trim();
+  if (!name) {
+    showToast('请输入平台名称', 'error');
+    return;
+  }
+  
+  const containerEl = $('platformUsesContainer');
+  const inputs = containerEl.querySelectorAll('input');
+  const uses = Array.from(inputs)
+    .map(input => input.value.trim())
+    .filter(value => value);
+  
+  if (uses.length === 0) {
+    showToast('请至少添加一个使用场景', 'error');
+    return;
+  }
+  
+  const platformData = {
+    id: editingPlatformId || 'p_' + Date.now(),
+    name: name,
+    uses: uses.map((desc, index) => ({
+      id: 'u_' + Date.now() + '_' + index,
+      desc: desc
+    }))
+  };
+  
+  const platforms = getCurrentTripPlatforms();
+  
+  if (editingPlatformId) {
+    const index = platforms.findIndex(p => p.id === editingPlatformId);
+    if (index !== -1) {
+      platforms[index] = platformData;
+    }
+  } else {
+    platforms.push(platformData);
+  }
+  
+  appData.trips[appData.currentTrip].platforms = platforms;
+  if (!tempTrip) {
+    localStorage.setItem('appData', JSON.stringify(appData));
+  }
+  closePlatformModal();
+  renderPlatformsList();
+  showToast('保存成功！', 'success');
+}
+
+function deletePlatform(platformId) {
+  if (!confirm('确定删除这个购票平台吗？')) return;
+  
+  const platforms = getCurrentTripPlatforms();
+  appData.trips[appData.currentTrip].platforms = platforms.filter(p => p.id !== platformId);
+  if (!tempTrip) {
+    localStorage.setItem('appData', JSON.stringify(appData));
+  }
+  renderPlatformsList();
+  showToast('删除成功！', 'info');
+}
+
+function getNeedReservationSpotsInTrip() {
+  const allSpots = appData.spots || [];
+  const days = getCurrentTripDays();
+  
+  const tripSpotIds = new Set();
+  days.forEach(day => {
+    day.spotIds?.forEach(spotId => {
+      tripSpotIds.add(spotId);
+    });
+  });
+  
+  return allSpots.filter(spot => spot.needReservation && tripSpotIds.has(spot.id));
+}
+
+function getSpotTripDay(spotId) {
+  const days = getCurrentTripDays();
+  for (const day of days) {
+    if (day.spotIds?.includes(spotId)) {
+      // 动态计算日期，而不是使用存储的固定日期
+      const calculatedDate = calculateDayDate(day.day);
+      if (calculatedDate) {
+        const dateObj = new Date(calculatedDate);
+        // 返回包含动态日期的对象
+        return {
+          ...day,
+          date: `${dateObj.getMonth() + 1}.${dateObj.getDate()}`, // 格式化为 "6.13"
+          weekday: getWeekdayString(calculatedDate)
+        };
+      }
+      return day;
+    }
+  }
+  return null;
+}
+
+function calculateDueDate(spotId, advanceText) {
+  const day = getSpotTripDay(spotId);
+  if (!day) return null;
+  
+  const match = advanceText.match(/(\d+)/);
+  if (!match) return null;
+  
+  const advanceDays = parseInt(match[1]);
+  if (isNaN(advanceDays)) return null;
+  
+  const tripDateStr = calculateDayDate(day.day);
+  if (!tripDateStr) return null;
+  
+  const tripDate = new Date(tripDateStr);
+  tripDate.setDate(tripDate.getDate() - advanceDays);
+  
+  return `${tripDate.getMonth() + 1}月${tripDate.getDate()}日`;
+}
+
+function updateReservationDueDate() {
+  const spotId = $('reservationModalSpot').value;
+  const advance = $('reservationModalAdvance').value;
+  const hintEl = $('reservationDueDateHint');
+  const dueDateEl = $('reservationModalDueDate');
+  
+  if (!spotId || !advance) {
+    dueDateEl.value = '';
+    hintEl.textContent = '';
+    return;
+  }
+  
+  const day = getSpotTripDay(spotId);
+  if (!day) {
+    dueDateEl.value = '';
+    hintEl.textContent = '该景点未安排在行程中';
+    return;
+  }
+  
+  const dueDate = calculateDueDate(spotId, advance);
+  const tripDateStr = calculateDayDate(day.day);
+  const dayDateFormatted = tripDateStr ? (() => {
+    const d = new Date(tripDateStr);
+    return `${d.getMonth() + 1}.${d.getDate()}`;
+  })() : '';
+  const dayWeekday = getWeekdayString(tripDateStr);
+  
+  if (dueDate) {
+    dueDateEl.value = dueDate;
+    hintEl.textContent = `💡 该景点安排在${dayDateFormatted}（${dayWeekday}），提前${advance}天预约，则截止日期为${dueDate}`;
+  } else {
+    dueDateEl.value = '';
+    hintEl.textContent = '无法计算截止日期';
+  }
+}
+
+function populateReservationSpotSelect() {
+  const selectEl = $('reservationModalSpot');
+  const spots = getNeedReservationSpotsInTrip();
+  
+  selectEl.innerHTML = '<option value="">请选择需要预约的景点</option>';
+  
+  spots.forEach(spot => {
+    const day = getSpotTripDay(spot.id);
+    let dayInfo = '';
+    if (day) {
+      const tripDateStr = calculateDayDate(day.day);
+      const dayDateFormatted = tripDateStr ? (() => {
+        const d = new Date(tripDateStr);
+        return `${d.getMonth() + 1}.${d.getDate()}`;
+      })() : '';
+      const dayWeekday = getWeekdayString(tripDateStr);
+      dayInfo = `（${dayDateFormatted} ${dayWeekday}）`;
+    }
+    const option = document.createElement('option');
+    option.value = spot.id;
+    option.textContent = `${spot.name}${dayInfo}`;
+    selectEl.appendChild(option);
+  });
+  
+  if (spots.length === 0) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = '暂无需要预约的景点';
+    option.disabled = true;
+    selectEl.appendChild(option);
+  }
+}
+
+function openReservationModal(reservationId = null) {
+  editingReservationId = reservationId;
+  const modal = $('reservationModal');
+  const titleEl = $('reservationModalTitle');
+  
+  populateReservationSpotSelect();
+  
+  const spotEl = $('reservationModalSpot');
+  const platformEl = $('reservationModalPlatform');
+  const advanceEl = $('reservationModalAdvance');
+  const dueDateEl = $('reservationModalDueDate');
+  
+  if (reservationId) {
+    titleEl.textContent = '编辑预约提醒';
+    const reservation = getCurrentTripReservations().find(r => r.id === reservationId);
+    if (reservation) {
+      spotEl.value = reservation.spotId;
+      platformEl.value = reservation.platform;
+      advanceEl.value = reservation.advance;
+      dueDateEl.value = '';
+      updateReservationDueDate();
+    }
+  } else {
+    titleEl.textContent = '添加预约提醒';
+    spotEl.value = '';
+    platformEl.value = '';
+    advanceEl.value = '';
+    dueDateEl.value = '';
+    $('reservationDueDateHint').textContent = '';
+  }
+  
+  modal.style.display = 'flex';
+}
+
+function closeReservationModal() {
+  $('reservationModal').style.display = 'none';
+  editingReservationId = null;
+}
+
+function saveReservation() {
+  const spotId = $('reservationModalSpot').value;
+  const platform = $('reservationModalPlatform').value.trim();
+  const advance = $('reservationModalAdvance').value.trim();
+  
+  if (!spotId) {
+    showToast('请选择景点', 'error');
+    return;
+  }
+  
+  // 检查该景点是否已有预约提醒（新增时才检查）
+  if (!editingReservationId) {
+    const reservations = getCurrentTripReservations();
+    const existingReservation = reservations.find(r => r.spotId === spotId);
+    if (existingReservation) {
+      const spot = appData.spots?.find(s => s.id === spotId);
+      const spotName = spot ? spot.name : '该景点';
+      showToast(`${spotName}已存在预约提醒！`, 'error');
+      return;
+    }
+  }
+  
+  const reservationData = {
+    id: editingReservationId || 'r_' + Date.now(),
+    spotId: spotId,
+    platform: platform,
+    advance: advance
+  };
+  
+  const reservations = getCurrentTripReservations();
+  
+  if (editingReservationId) {
+    const index = reservations.findIndex(r => r.id === editingReservationId);
+    if (index !== -1) {
+      reservations[index] = reservationData;
+    }
+  } else {
+    reservations.push(reservationData);
+  }
+  
+  appData.trips[appData.currentTrip].reservations = reservations;
+  if (!tempTrip) {
+    localStorage.setItem('appData', JSON.stringify(appData));
+  }
+  closeReservationModal();
+  renderReservationsList();
+  showToast('保存成功！', 'success');
+}
+
+function deleteReservation(reservationId) {
+  if (!confirm('确定删除这个预约提醒吗？')) return;
+  
+  const reservations = getCurrentTripReservations();
+  appData.trips[appData.currentTrip].reservations = reservations.filter(r => r.id !== reservationId);
+  if (!tempTrip) {
+    localStorage.setItem('appData', JSON.stringify(appData));
+  }
+  renderReservationsList();
+  showToast('删除成功！', 'info');
+}
+
+function backToTripsList() {
+  if (tempTrip && appData.trips[tempTrip]) {
+    delete appData.trips[tempTrip];
+    localStorage.setItem('appData', JSON.stringify(appData));
+    tempTrip = null;
+  }
+  
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  $('tripsSection').classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelector('.nav-item[data-section="trips"]').classList.add('active');
+  renderTripsList();
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    
+    const section = item.dataset.section;
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    $(`${section}Section`).classList.add('active');
+    
+    if (section === 'trips') {
+      renderTripsList();
+    }
+  });
+});
+
+$('logoutBtn').addEventListener('click', () => {
+  githubConfig = { token: '', repo: '' };
+  sessionStorage.removeItem('githubConfig');
+  localStorage.removeItem('appData');
+  $('adminPage').classList.remove('active');
+  $('loginPage').style.display = 'flex';
+  $('tokenInput').value = '';
+  $('repoInput').value = '';
+  $('loginBtn').disabled = false;
+  $('loginBtn').textContent = '进入后台';
+});
+
+$('saveTripBtn').addEventListener('click', () => {
+  const title = $('tripTitle').value.trim();
+  if (!title) {
+    showToast('请输入行程标题', 'error');
+    return;
+  }
+  
+  if (!appData.trips) appData.trips = {};
+  if (!appData.trips[appData.currentTrip]) appData.trips[appData.currentTrip] = {};
+  
+  const startDate = $('tripStartDate').value;
+  const endDate = $('tripEndDate').value;
+  
+  appData.trips[appData.currentTrip] = {
+    ...appData.trips[appData.currentTrip],
+    id: appData.currentTrip,
+    title: title,
+    startDate: startDate,
+    endDate: endDate,
+    subtitle: $('tripSubtitle').value,
+    description: $('tripDescription').value,
+    days: appData.trips[appData.currentTrip]?.days || [],
+    platforms: appData.trips[appData.currentTrip]?.platforms || [],
+    reservations: appData.trips[appData.currentTrip]?.reservations || []
+  };
+  
+  localStorage.setItem('appData', JSON.stringify(appData));
+  tempTrip = null;
+  renderDaysList();
+  renderReservationsList();
+  showToast('保存成功！', 'success');
+});
+
+$('addTripBtn').addEventListener('click', () => {
+  const tripId = 'trip_' + Date.now();
+  tempTrip = tripId;
+  
+  if (!appData.trips) appData.trips = {};
+  appData.trips[tripId] = {
+    id: tripId,
+    title: '',
+    startDate: '',
+    endDate: '',
+    subtitle: '',
+    description: '',
+    platforms: [],
+    reservations: [],
+    days: []
+  };
+  
+  appData.currentTrip = tripId;
+  
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  $('tripDetailSection').classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  
+  loadTripFormData();
+  renderDaysList();
+  renderPlatformsList();
+  renderReservationsList();
+});
+
+$('backToTripsBtn').addEventListener('click', backToTripsList);
+
+$('addPlatformBtn').addEventListener('click', () => { openPlatformModal(); });
+$('addUseBtn').addEventListener('click', () => { addUseItem('', true); });
+$('addReservationBtn').addEventListener('click', () => { openReservationModal(); });
+
+if ($('platformModalCloseBtn')) $('platformModalCloseBtn').addEventListener('click', closePlatformModal);
+if ($('platformModalCancelBtn')) $('platformModalCancelBtn').addEventListener('click', closePlatformModal);
+if ($('platformModalSaveBtn')) $('platformModalSaveBtn').addEventListener('click', savePlatform);
+
+if ($('reservationModalCloseBtn')) $('reservationModalCloseBtn').addEventListener('click', closeReservationModal);
+if ($('reservationModalCancelBtn')) $('reservationModalCancelBtn').addEventListener('click', closeReservationModal);
+if ($('reservationModalSaveBtn')) $('reservationModalSaveBtn').addEventListener('click', saveReservation);
+if ($('reservationModalSpot')) $('reservationModalSpot').addEventListener('change', updateReservationDueDate);
+if ($('reservationModalAdvance')) $('reservationModalAdvance').addEventListener('input', updateReservationDueDate);
+
+$('previewDataBtn').addEventListener('click', () => {
+  const jsonWindow = window.open('', '_blank');
+  jsonWindow.document.write('<pre style="background: #fafafa; color: #1a1a1a; padding: 20px; font-family: monospace; font-size: 12px;">' + JSON.stringify(appData, null, 2) + '</pre>');
+});
+
+$('reloadDataBtn').addEventListener('click', () => {
+  if (!confirm('确定要从 JSON 文件重新加载数据吗？所有未保存的修改将丢失。')) return;
+  
+  // 检查是否以 file:// 协议打开
+  if (window.location.protocol === 'file:') {
+    showToast('当前以文件方式打开，已使用默认数据', 'info');
+    localStorage.removeItem('appData');
+    appData = JSON.parse(JSON.stringify(defaultData));
+    localStorage.setItem('appData', JSON.stringify(appData));
+    renderUI();
+    return;
+  }
+  
+  localStorage.removeItem('appData');
+  
+  fetch('data/itinerary.json')
+    .then(res => res.json())
+    .then(data => {
+      appData = data;
+      localStorage.setItem('appData', JSON.stringify(appData));
+      renderUI();
+      showToast('数据已从 JSON 文件重新加载！', 'success');
+    })
+    .catch(() => {
+      showToast('加载失败，请检查 data/itinerary.json 文件是否存在', 'error');
+    });
+});
+
+let editingSpotId = null;
+
+function showToast(message, type = 'info', duration = 3000) {
+  const container = document.getElementById('toastContainer');
+  if (!container) {
+    const containerEl = document.createElement('div');
+    containerEl.id = 'toastContainer';
+    containerEl.className = 'toast-container';
+    document.body.appendChild(containerEl);
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  
+  const icons = {
+    success: '✓',
+    error: '✕',
+    info: 'ℹ'
+  };
+  
+  toast.innerHTML = `
+    <span class="toast-icon">${icons[type] || icons.info}</span>
+    <span class="toast-message">${message}</span>
+  `;
+  
+  document.getElementById('toastContainer').appendChild(toast);
+  
+  setTimeout(() => {
+    toast.classList.add('fade-out');
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, duration);
+}
+
+function renderSpotsList(searchKeyword = '') {
+  const listEl = $('spotsList');
+  if (!appData.spots || appData.spots.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 40px;">暂无景点</p>';
+    return;
+  }
+  
+  let filteredSpots = appData.spots;
+  
+  if (searchKeyword) {
+    const keyword = searchKeyword.toLowerCase();
+    filteredSpots = appData.spots.filter(spot => {
+      return spot.name.toLowerCase().includes(keyword) || 
+             spot.city.toLowerCase().includes(keyword) ||
+             (spot.brief && spot.brief.toLowerCase().includes(keyword));
+    });
+  }
+  
+  if (filteredSpots.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 40px;">未找到匹配的景点</p>';
+    return;
+  }
+  
+  listEl.innerHTML = filteredSpots.map(spot => `
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: flex-start;">
+      <div style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <h4 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0;">${spot.name}</h4>
+          <span style="font-size: 11px; color: var(--text-dim); background: var(--surface-2); padding: 2px 8px; border-radius: 4px;">${spot.city}</span>
+          ${spot.needReservation ? '<span style="font-size: 11px; color: #c00; background: rgba(204,0,0,0.1); padding: 2px 8px; border-radius: 4px;">需预约</span>' : ''}
+        </div>
+        <p style="font-size: 12px; color: var(--text-dim); margin: 0 0 8px 0;">${spot.brief || ''}</p>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <span style="font-size: 11px; color: var(--text-dim);">${spot.hours || ''}</span>
+          <span style="font-size: 11px; color: var(--text-dim);">${spot.ticket || ''}</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-logout" onclick="openSpotModal('${spot.id}'); return false;" style="width: auto; padding: 6px 12px; font-size: 11px;">编辑</button>
+        <button class="btn btn-logout" onclick="deleteSpot('${spot.id}'); return false;" style="width: auto; padding: 6px 12px; font-size: 11px; color: #c00; border-color: rgba(204,0,0,0.3);">删除</button>
+      </div>
+    </div>
+  `).join('');
+  
+  // 不再在这里绑定事件，改用事件委托
+}
+
+function openSpotModal(spotId = null) {
+  editingSpotId = spotId;
+  
+  if (spotId) {
+    const spot = appData.spots.find(s => s.id === spotId);
+    if (!spot) return;
+    
+    $('spotModalTitle').textContent = '编辑景点';
+    $('spotModalName').value = spot.name || '';
+    setLocationValue(spot.city || '');
+    $('spotModalBrief').value = spot.brief || '';
+    
+    $('spotModalHours').value = spot.hours || '';
+    $('spotModalTicket').value = spot.ticket || '';
+    $('spotModalNeedReservation').checked = spot.needReservation || false;
+    $('spotModalDescription').value = spot.description || '';
+  } else {
+    $('spotModalTitle').textContent = '新增景点';
+    $('spotModalName').value = '';
+    $('spotModalProvince').value = '';
+    $('spotModalCity').value = '';
+    $('spotModalDistrict').value = '';
+    $('spotModalProvince').disabled = false;
+    $('spotModalCity').disabled = true;
+    $('spotModalDistrict').disabled = true;
+    $('spotModalBrief').value = '';
+    $('spotModalHours').value = '';
+    $('spotModalTicket').value = '';
+    $('spotModalNeedReservation').checked = false;
+    $('spotModalDescription').value = '';
+  }
+  
+  $('spotModal').style.display = 'flex';
+}
+
+function saveSpot() {
+  const name = $('spotModalName').value.trim();
+  if (!name) {
+    showToast('请输入景点名称', 'error');
+    return;
+  }
+  
+  const spotData = {
+    id: editingSpotId || `spot_${Date.now()}`,
+    name: name,
+    city: getLocationValue(),
+    brief: $('spotModalBrief').value.trim(),
+    hours: $('spotModalHours').value.trim(),
+    ticket: $('spotModalTicket').value.trim(),
+    needReservation: $('spotModalNeedReservation').checked,
+    description: $('spotModalDescription').value.trim()
+  };
+  
+  if (editingSpotId) {
+    const index = appData.spots.findIndex(s => s.id === editingSpotId);
+    if (index !== -1) {
+      appData.spots[index] = { ...appData.spots[index], ...spotData };
+    }
+  } else {
+    if (!appData.spots) appData.spots = [];
+    appData.spots.push(spotData);
+  }
+  
+  localStorage.setItem('appData', JSON.stringify(appData));
+  $('spotsCount').textContent = appData.spots.length;
+  closeSpotModal();
+  renderSpotsList();
+  showToast('保存成功！', 'success');
+}
+
+function deleteSpot(spotId) {
+  if (!confirm('确定要删除这个景点吗？')) return;
+  
+  appData.spots = appData.spots.filter(s => s.id !== spotId);
+  localStorage.setItem('appData', JSON.stringify(appData));
+  $('spotsCount').textContent = appData.spots.length;
+  renderSpotsList();
+  showToast('删除成功！', 'info');
+}
+
+function closeSpotModal() {
+  $('spotModal').style.display = 'none';
+  editingSpotId = null;
+}
+
+function exportData() {
+  const dataStr = JSON.stringify(appData, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'itinerary.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function syncDataToGitHub() {
+  if (!githubConfig || !githubConfig.token || !githubConfig.repo) {
+    showToast('请先在设置中配置GitHub Token和仓库信息', 'error');
+    return;
+  }
+  
+  if (githubConfig.token === 'skipped') {
+    showToast('请先登录 GitHub（当前为跳过验证模式）', 'error');
+    return;
+  }
+  
+  const syncBtn = $('syncDataBtn');
+  const originalText = syncBtn.textContent;
+  syncBtn.disabled = true;
+  syncBtn.textContent = '同步中...';
+  
+  try {
+    // 1. 获取当前文件的 SHA
+    const getFileResponse = await fetch(`https://api.github.com/repos/${githubConfig.repo}/contents/data/itinerary.json`, {
+      headers: {
+        'Authorization': `token ${githubConfig.token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    
+    let sha = null;
+    if (getFileResponse.ok) {
+      const fileData = await getFileResponse.json();
+      sha = fileData.sha;
+    } else if (getFileResponse.status === 404) {
+      // 文件不存在，需要创建（不需要 SHA）
+      sha = null;
+    } else {
+      throw new Error(`获取文件信息失败: ${getFileResponse.status}`);
+    }
+    
+    // 2. 准备提交数据
+    const content = JSON.stringify(appData, null, 2);
+    const encodedContent = btoa(unescape(encodeURIComponent(content)));
+    
+    const commitData = {
+      message: `更新行程数据 - ${new Date().toLocaleString('zh-CN')}`,
+      content: encodedContent,
+      branch: 'main'
+    };
+    
+    if (sha) {
+      commitData.sha = sha;
+    }
+    
+    // 3. 提交更新
+    const updateResponse = await fetch(`https://api.github.com/repos/${githubConfig.repo}/contents/data/itinerary.json`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${githubConfig.token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(commitData)
+    });
+    
+    if (!updateResponse.ok) {
+      const errorText = await updateResponse.text();
+      throw new Error(`提交失败: ${updateResponse.status} - ${errorText}`);
+    }
+    
+    const result = await updateResponse.json();
+    showToast('同步成功！数据已发布到 GitHub', 'success');
+    
+    // 更新连接状态显示
+    updateConnectionStatus();
+    
+  } catch (error) {
+    console.error('GitHub sync error:', error);
+    showToast(`同步失败: ${error.message}`, 'error');
+  } finally {
+    syncBtn.disabled = false;
+    syncBtn.textContent = originalText;
+  }
+}
+
+function initEventListeners() {
+  // 景点相关事件
+  if ($('addSpotBtn')) $('addSpotBtn').addEventListener('click', () => openSpotModal());
+  if ($('modalSaveBtn')) $('modalSaveBtn').addEventListener('click', saveSpot);
+  if ($('modalCancelBtn')) $('modalCancelBtn').addEventListener('click', closeSpotModal);
+  if ($('modalCloseBtn')) $('modalCloseBtn').addEventListener('click', closeSpotModal);
+  if ($('exportDataBtn')) $('exportDataBtn').addEventListener('click', exportData);
+  if ($('syncDataBtn')) $('syncDataBtn').addEventListener('click', syncDataToGitHub);
+  
+  // 每日行程相关事件
+  if ($('addDayBtn')) $('addDayBtn').addEventListener('click', () => openDayModal());
+  if ($('dayModalSaveBtn')) $('dayModalSaveBtn').addEventListener('click', saveDay);
+  if ($('dayModalCancelBtn')) $('dayModalCancelBtn').addEventListener('click', closeDayModal);
+  if ($('dayModalCloseBtn')) $('dayModalCloseBtn').addEventListener('click', closeDayModal);
+  if ($('dayModalDate')) $('dayModalDate').addEventListener('change', updateWeekdayFromDate);
+  
+  // 点击模态框遮罩层关闭
+  if ($('dayModal')) {
+    $('dayModal').addEventListener('click', (e) => {
+      if (e.target === $('dayModal')) {
+        closeDayModal();
+      }
+    });
+  }
+  if ($('spotModal')) {
+    $('spotModal').addEventListener('click', (e) => {
+      if (e.target === $('spotModal')) {
+        closeSpotModal();
+      }
+    });
+  }
+  if ($('hotelModal')) {
+    $('hotelModal').addEventListener('click', (e) => {
+      if (e.target === $('hotelModal')) {
+        closeHotelModal();
+      }
+    });
+  }
+  
+  // 酒店相关事件
+  if ($('addHotelBtn')) {
+    $('addHotelBtn').addEventListener('click', () => {
+      openHotelModal();
+    });
+  }
+  if ($('hotelModalSaveBtn')) {
+    $('hotelModalSaveBtn').addEventListener('click', saveHotel);
+  }
+  if ($('hotelModalCancelBtn')) {
+    $('hotelModalCancelBtn').addEventListener('click', closeHotelModal);
+  }
+  if ($('hotelModalCloseBtn')) {
+    $('hotelModalCloseBtn').addEventListener('click', closeHotelModal);
+  }
+  if ($('hotelSearchInput')) {
+    $('hotelSearchInput').addEventListener('input', (e) => {
+      renderHotelsList(e.target.value);
+    });
+  }
+  
+  // 酒店位置三级联动
+  if ($('hotelModalProvince')) {
+    $('hotelModalProvince').addEventListener('change', () => {
+      populateHotelCityDropdown();
+    });
+  }
+  if ($('hotelModalCity')) {
+    $('hotelModalCity').addEventListener('change', () => {
+      populateHotelDistrictDropdown();
+    });
+  }
+  
+
+  
+  if ($('spotSearchInput')) {
+    $('spotSearchInput').addEventListener('input', (e) => {
+      renderSpotsList(e.target.value);
+    });
+  }
+  
+  initLocationDropdowns();
+  
+  if ($('spotModalProvince')) {
+    $('spotModalProvince').addEventListener('change', () => {
+      populateCityDropdown();
+    });
+  }
+  
+  if ($('spotModalCity')) {
+    $('spotModalCity').addEventListener('change', () => {
+      populateDistrictDropdown();
+    });
+  }
+  
+  // ESC 键关闭模态框
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if ($('dayModal') && $('dayModal').style.display !== 'none') {
+        closeDayModal();
+      } else if ($('spotModal') && $('spotModal').style.display !== 'none') {
+        closeSpotModal();
+      } else if ($('hotelModal') && $('hotelModal').style.display !== 'none') {
+        closeHotelModal();
+      } else if ($('platformModal') && $('platformModal').style.display !== 'none') {
+        closePlatformModal();
+      } else if ($('reservationModal') && $('reservationModal').style.display !== 'none') {
+        closeReservationModal();
+      }
+    }
+  });
+  
+  initLocationDropdowns();
+}
+
+function initLocationDropdowns() {
+  const provinceSelect = $('spotModalProvince');
+  const citySelect = $('spotModalCity');
+  const districtSelect = $('spotModalDistrict');
+  
+  provinceSelect.innerHTML = '<option value="">选择省份</option>';
+  Object.keys(locationData).forEach(province => {
+    const option = document.createElement('option');
+    option.value = province;
+    option.textContent = province;
+    provinceSelect.appendChild(option);
+  });
+  
+  provinceSelect.disabled = false;
+  citySelect.disabled = true;
+  districtSelect.disabled = true;
+}
+
+function populateCityDropdown() {
+  const provinceSelect = $('spotModalProvince');
+  const citySelect = $('spotModalCity');
+  const districtSelect = $('spotModalDistrict');
+  
+  citySelect.innerHTML = '<option value="">选择城市</option>';
+  districtSelect.innerHTML = '<option value="">选择区县</option>';
+  citySelect.disabled = true;
+  districtSelect.disabled = true;
+  
+  const selectedProvince = provinceSelect.value;
+  if (selectedProvince && locationData[selectedProvince]) {
+    citySelect.disabled = false;
+    Object.keys(locationData[selectedProvince]).forEach(city => {
+      const option = document.createElement('option');
+      option.value = city;
+      option.textContent = city;
+      citySelect.appendChild(option);
+    });
+  }
+}
+
+function populateDistrictDropdown() {
+  const provinceSelect = $('spotModalProvince');
+  const citySelect = $('spotModalCity');
+  const districtSelect = $('spotModalDistrict');
+  
+  districtSelect.innerHTML = '<option value="">选择区县</option>';
+  districtSelect.disabled = true;
+  
+  const selectedProvince = provinceSelect.value;
+  const selectedCity = citySelect.value;
+  
+  if (selectedProvince && selectedCity && locationData[selectedProvince] && locationData[selectedProvince][selectedCity]) {
+    districtSelect.disabled = false;
+    locationData[selectedProvince][selectedCity].forEach(district => {
+      const option = document.createElement('option');
+      option.value = district;
+      option.textContent = district;
+      districtSelect.appendChild(option);
+    });
+  }
+}
+
+function setLocationValue(locationStr) {
+  if (!locationStr) return;
+  
+  const parts = locationStr.split(' - ');
+  const province = parts[0] || '';
+  const city = parts[1] || '';
+  const district = parts[2] || '';
+  
+  $('spotModalProvince').value = province;
+  populateCityDropdown();
+  
+  setTimeout(() => {
+    $('spotModalCity').value = city;
+    populateDistrictDropdown();
+    
+    setTimeout(() => {
+      $('spotModalDistrict').value = district;
+    }, 50);
+  }, 50);
+}
+
+function getLocationValue() {
+  const province = $('spotModalProvince').value;
+  const city = $('spotModalCity').value;
+  const district = $('spotModalDistrict').value;
+  
+  if (!province) return '';
+  if (!city) return province;
+  if (!district) return `${province} - ${city}`;
+  return `${province} - ${city} - ${district}`;
+}
+
+function formatTimeForInput(timeStr) {
+  if (!timeStr) return '';
+  const match = timeStr.match(/(\d{1,2}):?(\d{0,2})/);
+  if (match) {
+    const hours = parseInt(match[1], 10).toString().padStart(2, '0');
+    const minutes = match[2] ? parseInt(match[2], 10).toString().padStart(2, '0') : '00';
+    return `${hours}:${minutes}`;
+  }
+  return '';
+}
+
+let editingDayIndex = null;
+let draggedDayIndex = -1;
+
+function calculateDayDate(dayNumber) {
+  if (!appData.trips || !appData.currentTrip || !appData.trips[appData.currentTrip] || !appData.trips[appData.currentTrip].startDate) {
+    return '';
+  }
+  
+  const startDate = new Date(appData.trips[appData.currentTrip].startDate);
+  startDate.setDate(startDate.getDate() + (dayNumber - 1));
+  
+  const year = startDate.getFullYear();
+  const month = String(startDate.getMonth() + 1).padStart(2, '0');
+  const day = String(startDate.getDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+}
+
+function getWeekdayString(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+  return weekdays[date.getDay()];
+}
+
+function renderDaysList() {
+  const listEl = $('daysList');
+  const days = getCurrentTripDays();
+  if (!days || days.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 40px;">暂无行程</p>';
+    return;
+  }
+
+  const sortedDays = [...days].sort((a, b) => a.day - b.day);
+  let html = '';
+  
+  sortedDays.forEach((day, index) => {
+    const calculatedDate = calculateDayDate(day.day);
+    const calculatedWeekday = getWeekdayString(calculatedDate);
+    const formattedDate = calculatedDate ? (() => {
+      const d = new Date(calculatedDate);
+      return `${d.getMonth() + 1}.${d.getDate()}`;
+    })() : '';
+    
+    html += '<div style="padding: 20px; border-bottom: 1px solid var(--border-light);">';
+    html += '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">';
+    html += '<div style="display: flex; align-items: center; gap: 12px;">';
+    html += '<span style="width: 32px; height: 32px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">D' + day.day + '</span>';
+    html += '<div>';
+    html += '<h4 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0;">' + (day.title || '') + '</h4>';
+    let subTextParts = [];
+    if (formattedDate) subTextParts.push(formattedDate);
+    if (calculatedWeekday) subTextParts.push(calculatedWeekday);
+    if (day.theme) subTextParts.push(day.theme);
+    html += '<p style="font-size: 12px; color: var(--text-dim); margin: 2px 0 0 0;">' + subTextParts.join(' · ') + '</p>';
+    html += '</div></div>';
+    html += '<div style="display: flex; gap: 8px;">';
+    
+    const upDisabled = index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : '';
+    const downDisabled = index === sortedDays.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : '';
+    
+    html += '<button onclick="moveDay(' + index + ', -1)" style="width: 28px; height: 28px; border: 1px solid var(--border); background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="上移" ' + upDisabled + '>↑</button>';
+    html += '<button onclick="moveDay(' + index + ', 1)" style="width: 28px; height: 28px; border: 1px solid var(--border); background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="下移" ' + downDisabled + '>↓</button>';
+    html += '<button class="btn btn-logout" onclick="openDayModal(' + index + '); return false;" style="width: auto; padding: 6px 12px; font-size: 11px;">编辑</button>';
+    html += '<button class="btn btn-logout" onclick="deleteDay(' + index + '); return false;" style="width: auto; padding: 6px 12px; font-size: 11px; color: #c00; border-color: rgba(204,0,0,0.3);">删除</button>';
+    html += '</div></div>';
+    
+    if (day.spotIds && day.spotIds.length > 0) {
+      html += '<div style="margin-bottom: 12px;">';
+      html += '<div style="display: flex; flex-wrap: wrap; gap: 6px;">';
+      day.spotIds.forEach(spotId => {
+        const spot = appData.spots ? appData.spots.find(s => s.id === spotId) : null;
+        html += '<span style="font-size: 11px; color: var(--text-mid); background: var(--surface-2); padding: 3px 8px; border-radius: 4px;">' + (spot ? spot.name : spotId) + '</span>';
+      });
+      html += '</div></div>';
+    }
+    
+    if (day.accommodation) {
+      const hotel = appData.hotels?.find(h => h.id === day.accommodation.hotelId);
+      html += '<div style="margin-bottom: 8px;"><span style="font-size: 12px; color: var(--text-dim);">🏨 ' + (hotel ? hotel.name : '') + '</span></div>';
+    }
+    
+    if (day.transport) {
+      html += '<div style="margin-bottom: 8px;"><span style="font-size: 12px; color: var(--text-dim);">🚗 ' + day.transport + '</span></div>';
+    }
+    
+    if (day.note) {
+      html += '<div style="padding: 8px; background: rgba(204,0,0,0.05); border-radius: 4px;"><span style="font-size: 12px; color: #c00;">⚠️ ' + day.note + '</span></div>';
+    }
+    
+    html += '</div>';
+  });
+  
+  listEl.innerHTML = html;
+}
+
+function bindDayDragEvents() {
+  const items = document.querySelectorAll('.day-item');
+  items.forEach(item => {
+    item.addEventListener('dragstart', handleDayDragStart);
+    item.addEventListener('dragover', handleDayDragOver);
+    item.addEventListener('drop', handleDayDrop);
+    item.addEventListener('dragend', handleDayDragEnd);
+  });
+}
+
+function handleDayDragStart(e) {
+  draggedDayIndex = parseInt(e.target.closest('.day-item').dataset.dayIndex);
+  e.target.closest('.day-item').style.opacity = '0.5';
+  e.target.closest('.day-item').style.background = 'var(--surface-2)';
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDayDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  
+  const targetItem = e.target.closest('.day-item');
+  if (targetItem) {
+    targetItem.style.borderTop = '3px solid var(--accent)';
+  }
+}
+
+function handleDayDrop(e) {
+  e.preventDefault();
+  
+  const targetItem = e.target.closest('.day-item');
+  if (targetItem && draggedDayIndex !== -1) {
+    const dropIndex = parseInt(targetItem.dataset.dayIndex);
+    
+    if (draggedDayIndex !== dropIndex) {
+      // 重新排序
+      const days = [...getCurrentTripDays()];
+      const [removed] = days.splice(draggedDayIndex, 1);
+      days.splice(dropIndex, 0, removed);
+      
+      // 重新编号
+      days.forEach((day, index) => {
+        day.day = index + 1;
+      });
+      
+      setCurrentTripDays(days);
+      if (!tempTrip) {
+        localStorage.setItem('appData', JSON.stringify(appData));
+      }
+      renderDaysList();
+    }
+  }
+  
+  draggedDayIndex = -1;
+}
+
+function handleDayDragEnd(e) {
+  const items = document.querySelectorAll('.day-item');
+  items.forEach(item => {
+    item.style.opacity = '1';
+    item.style.background = 'white';
+    item.style.borderTop = 'none';
+  });
+  draggedDayIndex = -1;
+}
+
+let selectedDaySpotIds = [];
+let selectedDayHotelId = null;
+
+function showDayHotelList(show) {
+  const listEl = $('dayAvailableHotels');
+  if (listEl) {
+    listEl.style.display = show ? 'block' : 'none';
+  }
+}
+
+function filterDayHotels() {
+  const keyword = $('dayHotelSearch').value.toLowerCase();
+  
+  let hotels = appData.hotels || [];
+  
+  if (keyword) {
+    hotels = hotels.filter(h => 
+      h.name.toLowerCase().includes(keyword) || 
+      h.location.toLowerCase().includes(keyword) ||
+      h.address.toLowerCase().includes(keyword)
+    );
+  }
+  
+  renderDayHotelList(hotels);
+}
+
+function renderDayHotelList(hotels = null) {
+  const listEl = $('dayAvailableHotels');
+  const hotelsToRender = hotels !== null ? hotels : (appData.hotels || []);
+  
+  if (hotelsToRender.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 16px;">无匹配的酒店</p>';
+    return;
+  }
+  
+  listEl.innerHTML = hotelsToRender.map(hotel => {
+    const isSelected = selectedDayHotelId === hotel.id;
+    return `
+      <div style="background: ${isSelected ? 'var(--accent-dim)' : 'white'}; display: flex; align-items: center; gap: 8px; padding: 6px 8px; margin-bottom: 4px; border-radius: 4px; cursor: pointer;"
+           onclick="selectDayHotel('${hotel.id}')">
+        <span style="font-size: 13px; color: var(--text);">${hotel.name}</span>
+        <span style="font-size: 11px; color: var(--text-dim);">(${hotel.location || ''})</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectDayHotel(hotelId) {
+  selectedDayHotelId = hotelId;
+  
+  const hotel = appData.hotels?.find(h => h.id === hotelId);
+  const badge = $('selectedHotelBadge');
+  const badgeName = $('selectedHotelName');
+  const badgeLocation = $('selectedHotelLocation');
+  const searchInput = $('dayHotelSearch');
+  
+  if (hotel) {
+    badgeName.textContent = hotel.name;
+    badgeLocation.textContent = hotel.location ? `(${hotel.location})` : '';
+    badge.style.display = 'flex';
+    searchInput.value = '';
+    searchInput.placeholder = '';
+  } else {
+    badge.style.display = 'none';
+    searchInput.placeholder = '搜索酒店名称、城市...';
+  }
+  
+  filterDayHotels();
+  showDayHotelList(false);
+}
+
+function clearSelectedHotel() {
+  selectedDayHotelId = null;
+  $('selectedHotelBadge').style.display = 'none';
+  $('selectedHotelName').textContent = '';
+  $('selectedHotelLocation').textContent = '';
+  $('dayHotelSearch').placeholder = '搜索酒店名称、城市...';
+  $('dayHotelSearch').style.paddingLeft = '8px';
+  filterDayHotels();
+}
+
+function initDaySpotFilters() {
+  const provinceSelect = $('dayModalSpotProvince');
+  const citySelect = $('dayModalSpotCity');
+  const districtSelect = $('dayModalSpotDistrict');
+  
+  provinceSelect.innerHTML = '<option value="">全部省份</option>';
+  Object.keys(locationData).forEach(province => {
+    const option = document.createElement('option');
+    option.value = province;
+    option.textContent = province;
+    provinceSelect.appendChild(option);
+  });
+  
+  provinceSelect.addEventListener('change', () => {
+    const province = provinceSelect.value;
+    citySelect.innerHTML = '<option value="">全部城市</option>';
+    districtSelect.innerHTML = '<option value="">全部区县</option>';
+    citySelect.disabled = !province;
+    districtSelect.disabled = true;
+    
+    if (province && locationData[province]) {
+      citySelect.disabled = false;
+      Object.keys(locationData[province]).forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+      });
+    }
+    renderDaySpotList();
+  });
+  
+  citySelect.addEventListener('change', () => {
+    const province = provinceSelect.value;
+    const city = citySelect.value;
+    districtSelect.innerHTML = '<option value="">全部区县</option>';
+    districtSelect.disabled = !city;
+    
+    if (province && city && locationData[province] && locationData[province][city]) {
+      districtSelect.disabled = false;
+      locationData[province][city].forEach(district => {
+        const option = document.createElement('option');
+        option.value = district;
+        option.textContent = district;
+        districtSelect.appendChild(option);
+      });
+    }
+    renderDaySpotList();
+  });
+  
+  districtSelect.addEventListener('change', () => {
+    renderDaySpotList();
+  });
+}
+
+function filterSpotsByLocation() {
+  const province = $('dayModalSpotProvince').value;
+  const city = $('dayModalSpotCity').value;
+  const district = $('dayModalSpotDistrict').value;
+  
+  if (!appData.spots) return [];
+  
+  return appData.spots.filter(spot => {
+    const parts = spot.city ? spot.city.split(' - ') : [];
+    const spotProvince = parts[0] || '';
+    const spotCity = parts[1] || '';
+    const spotDistrict = parts[2] || '';
+    
+    if (province && spotProvince !== province) return false;
+    if (city && spotCity !== city) return false;
+    if (district && spotDistrict !== district) return false;
+    
+    return true;
+  });
+}
+
+function renderDaySpotList() {
+  const container = $('dayModalAvailableSpots');
+  const availableSpots = filterSpotsByLocation();
+  
+  if (availableSpots.length === 0) {
+    container.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 16px;">无匹配的景点</p>';
+    return;
+  }
+  
+  container.innerHTML = availableSpots.map(spot => {
+    const isSelected = selectedDaySpotIds.includes(spot.id);
+    return `
+    <div style="background: ${isSelected ? 'var(--accent-dim)' : 'white'}; display: flex; align-items: center; gap: 8px; padding: 6px 8px; margin-bottom: 4px; border-radius: 4px; cursor: pointer;"
+         ondblclick="toggleSpotSelection('${spot.id}')">
+      <input type="checkbox" data-spot-id="${spot.id}" ${isSelected ? 'checked' : ''} style="margin: 0; cursor: pointer; width: 16px; height: 16px; accent-color: white;" onclick="event.stopPropagation(); toggleSpotSelection('${spot.id}');">
+      <span style="font-size: 13px; color: var(--text);">${spot.name}</span>
+      <span style="font-size: 11px; color: var(--text-dim);">(${spot.city})</span>
+    </div>
+  `}).join('');
+}
+
+function toggleSpotSelection(spotId) {
+  const index = selectedDaySpotIds.indexOf(spotId);
+  if (index === -1) {
+    selectedDaySpotIds.push(spotId);
+  } else {
+    selectedDaySpotIds.splice(index, 1);
+  }
+  renderSelectedSpots();
+  // 不再重新渲染左栏，只更新选中状态
+  updateSpotSelectionVisual(spotId);
+}
+
+function updateSpotSelectionVisual(spotId) {
+  const checkbox = document.querySelector(`input[type="checkbox"][data-spot-id="${spotId}"]`);
+  if (checkbox) {
+    checkbox.checked = selectedDaySpotIds.includes(spotId);
+    const parentDiv = checkbox.parentElement;
+    parentDiv.style.background = checkbox.checked ? 'var(--accent-dim)' : 'white';
+  }
+}
+
+function clearAllSpotSelection() {
+  document.querySelectorAll('input[type="checkbox"][data-spot-id]').forEach(checkbox => {
+    checkbox.checked = false;
+    const parentDiv = checkbox.parentElement;
+    parentDiv.style.background = 'white';
+  });
+}
+
+function renderSelectedSpots() {
+  const container = $('dayModalSelectedSpots');
+  
+  if (selectedDaySpotIds.length === 0) {
+    container.innerHTML = '<p style="color: var(--text-dim); font-size: 12px; text-align: center; padding-top: 80px;">拖拽或双击添加景点</p>';
+    return;
+  }
+  
+  container.innerHTML = '';
+  
+  selectedDaySpotIds.forEach((spotId, index) => {
+    const spot = appData.spots?.find(s => s.id === spotId);
+    if (!spot) return;
+    
+    const div = document.createElement('div');
+    div.draggable = true;
+    div.dataset.spotIndex = index;
+    div.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px; margin-bottom: 4px; background: white; border-radius: 4px; cursor: grab; border: 1px solid var(--border);';
+    div.onmousedown = () => { div.style.cursor = 'grabbing'; };
+    div.onmouseup = () => { div.style.cursor = 'grab'; };
+    div.ondragstart = handleDragStart;
+    div.ondragover = handleDragOver;
+    div.ondrop = handleDrop;
+    div.ondragend = handleDragEnd;
+    
+    div.innerHTML = `
+      <span style="font-size: 12px; font-weight: 600; min-width: 20px; text-align: center; color: var(--text-mid);">${index + 1}</span>
+      <span style="flex: 1; font-size: 13px; color: var(--text);">${spot.name}</span>
+      <span style="font-size: 11px; color: var(--text-dim);">${spot.city}</span>
+      <button onclick="removeSpotFromDay('${spotId}')" style="background: transparent; color: var(--text-dim); border: none; border-radius: 4px; padding: 2px 6px; font-size: 14px; cursor: pointer; transition: color 0.2s;" title="移除" onmouseover="this.style.color='#c00'" onmouseout="this.style.color='var(--text-dim)'">×</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+let draggedIndex = -1;
+
+function handleDragStart(e) {
+  draggedIndex = parseInt(e.target.dataset.spotIndex);
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.style.opacity = '0.5';
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  
+  const target = e.target.closest('[data-spot-index]');
+  if (target) {
+    target.style.borderColor = 'var(--accent)';
+    target.style.borderWidth = '2px';
+  }
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  
+  const target = e.target.closest('[data-spot-index]');
+  if (target) {
+    const dropIndex = parseInt(target.dataset.spotIndex);
+    
+    if (draggedIndex !== dropIndex) {
+      const [removed] = selectedDaySpotIds.splice(draggedIndex, 1);
+      selectedDaySpotIds.splice(dropIndex, 0, removed);
+      renderSelectedSpots();
+    }
+    
+    target.style.borderColor = 'var(--border)';
+    target.style.borderWidth = '1px';
+  }
+  
+  draggedIndex = -1;
+}
+
+function handleDragEnd(e) {
+  e.target.style.opacity = '1';
+  
+  document.querySelectorAll('[data-spot-index]').forEach(el => {
+    el.style.borderColor = 'var(--border)';
+    el.style.borderWidth = '1px';
+  });
+  
+  draggedIndex = -1;
+}
+
+function clearAllSpots() {
+  if (!confirm('确定要清空所有已选景点吗？')) return;
+  selectedDaySpotIds = [];
+  renderSelectedSpots();
+  renderDaySpotList();
+}
+
+function removeSpotFromDay(spotId) {
+  selectedDaySpotIds = selectedDaySpotIds.filter(id => id !== spotId);
+  renderSelectedSpots();
+  renderDaySpotList();
+}
+
+function moveSpotUp(index) {
+  if (index > 0) {
+    const temp = selectedDaySpotIds[index];
+    selectedDaySpotIds[index] = selectedDaySpotIds[index - 1];
+    selectedDaySpotIds[index - 1] = temp;
+    renderSelectedSpots();
+  }
+}
+
+function moveSpotDown(index) {
+  if (index < selectedDaySpotIds.length - 1) {
+    const temp = selectedDaySpotIds[index];
+    selectedDaySpotIds[index] = selectedDaySpotIds[index + 1];
+    selectedDaySpotIds[index + 1] = temp;
+    renderSelectedSpots();
+  }
+}
+
+function getSelectedDaySpotIds() {
+  return [...selectedDaySpotIds];
+}
+
+function updateWeekdayFromDate() {
+  const dateInput = $('dayModalDate');
+  const weekdayInput = $('dayModalWeekday');
+  
+  if (dateInput.value) {
+    const date = new Date(dateInput.value);
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    weekdayInput.value = weekdays[date.getDay()];
+  } else {
+    weekdayInput.value = '';
+  }
+}
+
+function openDayModal(index = null) {
+  editingDayIndex = index;
+  
+  initDaySpotFilters();
+  $('dayModalSpotProvince').value = '';
+  $('dayModalSpotCity').value = '';
+  $('dayModalSpotCity').disabled = true;
+  $('dayModalSpotDistrict').value = '';
+  $('dayModalSpotDistrict').disabled = true;
+  
+  $('dayHotelSearch').value = '';
+    selectedDayHotelId = null;
+    renderDayHotelList();
+    showDayHotelList(false);
+
+  if (index !== null && index >= 0 && getCurrentTripDays()[index]) {
+    const day = getCurrentTripDays()[index];
+    $('dayModalTitle').textContent = '编辑每日行程';
+    $('dayModalDay').value = day.day || '';
+    
+    const calculatedDate = calculateDayDate(day.day);
+    const calculatedWeekday = getWeekdayString(calculatedDate);
+    $('dayModalDate').value = calculatedDate;
+    $('dayModalWeekday').value = calculatedWeekday;
+    
+    $('dayModalTitleInput').value = day.title || '';
+    $('dayModalTheme').value = day.theme || '';
+    
+    if (day.accommodation?.hotelId) {
+      selectedDayHotelId = day.accommodation.hotelId;
+    } else if (day.accommodation?.name) {
+      const hotels = appData.hotels || [];
+      const matchingHotel = hotels.find(h => h.name === day.accommodation.name);
+      if (matchingHotel) {
+        selectedDayHotelId = matchingHotel.id;
+      }
+    }
+    
+    if (selectedDayHotelId) {
+      const hotel = appData.hotels?.find(h => h.id === selectedDayHotelId);
+      if (hotel) {
+        $('selectedHotelName').textContent = hotel.name;
+        $('selectedHotelLocation').textContent = hotel.location ? `(${hotel.location})` : '';
+        $('selectedHotelBadge').style.display = 'flex';
+        $('dayHotelSearch').placeholder = '';
+        $('dayHotelSearch').style.paddingLeft = '200px';
+        showDayHotelList(false);
+      }
+    }
+    
+    $('dayModalTransport').value = day.transport || '';
+    $('dayModalNote').value = day.note || '';
+    
+    selectedDaySpotIds = [...(day.spotIds || [])];
+    renderSelectedSpots();
+    renderDaySpotList();
+    renderDayHotelList();
+  } else {
+    const currentDays = getCurrentTripDays();
+    const usedDays = currentDays.map(d => d.day);
+    
+    // 找到第一个最小的空缺数字（从1开始找）
+    let newDayNumber = 1;
+    while (usedDays.includes(newDayNumber)) {
+      newDayNumber++;
+    }
+    const planDays = calculateTripDays(
+      appData.trips[appData.currentTrip].startDate, 
+      appData.trips[appData.currentTrip].endDate
+    );
+    
+    // 检查是否超过计划天数
+    if (planDays > 0 && newDayNumber > planDays) {
+      const confirmMsg = `当前行程计划为 ${planDays} 天（${appData.trips[appData.currentTrip].startDate} 至 ${appData.trips[appData.currentTrip].endDate}），确定要添加第 ${newDayNumber} 天吗？\n\n确定后将自动延长结束日期。`;
+      if (!confirm(confirmMsg)) {
+        return;
+      }
+      // 用户确认，自动延长结束日期
+      const startDate = new Date(appData.trips[appData.currentTrip].startDate);
+      const newEndDate = new Date(startDate);
+      newEndDate.setDate(startDate.getDate() + (newDayNumber - 1));
+      const newEndDateStr = `${newEndDate.getFullYear()}-${String(newEndDate.getMonth() + 1).padStart(2, '0')}-${String(newEndDate.getDate()).padStart(2, '0')}`;
+      appData.trips[appData.currentTrip].endDate = newEndDateStr;
+      localStorage.setItem('appData', JSON.stringify(appData));
+      // 更新基本信息表单里的结束日期
+      $('tripEndDate').value = newEndDateStr;
+    }
+    
+    $('dayModalTitle').textContent = '新增每日行程';
+    $('dayModalDay').value = newDayNumber;
+    const calculatedDate = calculateDayDate(newDayNumber);
+    const calculatedWeekday = getWeekdayString(calculatedDate);
+    $('dayModalDate').value = calculatedDate;
+    $('dayModalWeekday').value = calculatedWeekday;
+    $('dayModalTitleInput').value = '';
+    $('dayModalTheme').value = '';
+    $('dayModalTransport').value = '';
+    $('dayModalNote').value = '';
+    $('selectedHotelBadge').style.display = 'none';
+    $('selectedHotelName').textContent = '';
+    $('selectedHotelLocation').textContent = '';
+    $('dayHotelSearch').placeholder = '搜索酒店名称、城市...';
+    $('dayHotelSearch').style.paddingLeft = '8px';
+    
+    selectedDaySpotIds = [];
+    selectedDayHotelId = null;
+    renderSelectedSpots();
+    renderDaySpotList();
+    renderDayHotelList();
+  }
+
+  $('dayModal').style.display = 'flex';
+}
+
+function saveDay() {
+  const day = parseInt($('dayModalDay').value);
+  if (!day || day < 1) {
+    showToast('请输入有效的天数', 'error');
+    return;
+  }
+  
+  // 检查天数是否已存在（新增时才检查）
+  if (editingDayIndex === null) {
+    const currentDays = getCurrentTripDays();
+    const existingDay = currentDays.find(d => d.day === day);
+    if (existingDay) {
+      showToast(`第${day}天行程已存在！`, 'error');
+      return;
+    }
+  }
+
+  let title = $('dayModalTitleInput').value.trim();
+  if (!title) {
+    title = `第${day}天行程`;
+  }
+
+  const spotIds = getSelectedDaySpotIds();
+  
+  let accommodation = null;
+  if (selectedDayHotelId) {
+    accommodation = {
+      hotelId: selectedDayHotelId
+    };
+  }
+
+  const dayData = {
+    day: day,
+    title: title,
+    theme: $('dayModalTheme').value.trim(),
+    spotIds: spotIds,
+    accommodation: accommodation,
+    transport: $('dayModalTransport').value.trim(),
+    note: $('dayModalNote').value.trim() || null
+  };
+
+  if (editingDayIndex !== null && editingDayIndex >= 0) {
+    const days = [...getCurrentTripDays()];
+    days[editingDayIndex] = dayData;
+    setCurrentTripDays(days);
+  } else {
+    const days = [...getCurrentTripDays()];
+    days.push(dayData);
+    setCurrentTripDays(days);
+  }
+
+  if (!tempTrip) {
+    localStorage.setItem('appData', JSON.stringify(appData));
+  }
+  $('daysCount').textContent = getCurrentTripDays().length;
+  closeDayModal();
+  renderDaysList();
+  showToast('保存成功！', 'success');
+}
+
+function moveDay(index, direction) {
+  const days = getCurrentTripDays();
+  const newIndex = index + direction;
+  
+  if (newIndex < 0 || newIndex >= days.length) {
+    return;
+  }
+  
+  const sortedDays = [...days].sort((a, b) => a.day - b.day);
+  
+  const temp = sortedDays[index];
+  sortedDays[index] = sortedDays[newIndex];
+  sortedDays[newIndex] = temp;
+  
+  sortedDays.forEach((day, idx) => {
+    day.day = idx + 1;
+  });
+  
+  setCurrentTripDays(sortedDays);
+  localStorage.setItem('appData', JSON.stringify(appData));
+  renderDaysList();
+}
+
+function deleteDay(index) {
+  if (!confirm('确定要删除这天行程吗？')) return;
+
+  const days = [...getCurrentTripDays()];
+  days.splice(index, 1);
+  setCurrentTripDays(days);
+  
+  localStorage.setItem('appData', JSON.stringify(appData));
+  $('daysCount').textContent = getCurrentTripDays().length;
+  renderDaysList();
+  showToast('删除成功！', 'info');
+}
+
+function closeDayModal() {
+  const dayModal = $('dayModal');
+  if (dayModal) {
+    dayModal.style.display = 'none';
+    editingDayIndex = null;
+  }
+}
+
+let editingHotelId = null;
+
+function renderHotelsList(searchKeyword = '') {
+  const listEl = $('hotelsList');
+  if (!appData.hotels || appData.hotels.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 40px;">暂无酒店</p>';
+    return;
+  }
+  
+  let filteredHotels = appData.hotels;
+  
+  if (searchKeyword) {
+    const keyword = searchKeyword.toLowerCase();
+    filteredHotels = appData.hotels.filter(hotel => {
+      return hotel.name.toLowerCase().includes(keyword) || 
+             hotel.location.toLowerCase().includes(keyword) ||
+             (hotel.address && hotel.address.toLowerCase().includes(keyword));
+    });
+  }
+  
+  if (filteredHotels.length === 0) {
+    listEl.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 40px;">未找到匹配的酒店</p>';
+    return;
+  }
+  
+  listEl.innerHTML = filteredHotels.map(hotel => `
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: flex-start;">
+      <div style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <h4 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0;">${hotel.name}</h4>
+        </div>
+        <p style="font-size: 12px; color: var(--text-dim); margin: 0 0 4px 0;">${hotel.location || ''}</p>
+        ${hotel.address ? '<p style="font-size: 11px; color: var(--text-dim); margin: 0 0 4px 0;">📍 ' + hotel.address + '</p>' : ''}
+        ${hotel.phone ? '<p style="font-size: 11px; color: var(--text-dim); margin: 0 0 4px 0;">📞 ' + hotel.phone + '</p>' : ''}
+        ${hotel.checkInTime || hotel.checkOutTime ? '<p style="font-size: 11px; color: var(--text-dim); margin: 0;">入住 ' + (hotel.checkInTime || '--') + ' / 退房 ' + (hotel.checkOutTime || '--') + '</p>' : ''}
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-logout" onclick="openHotelModal('${hotel.id}'); return false;" style="width: auto; padding: 6px 12px; font-size: 11px;">编辑</button>
+        <button class="btn btn-logout" onclick="deleteHotel('${hotel.id}'); return false;" style="width: auto; padding: 6px 12px; font-size: 11px; color: #c00; border-color: rgba(204,0,0,0.3);">删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function initHotelLocationDropdowns() {
+  const provinceSelect = $('hotelModalProvince');
+  if (!provinceSelect) return;
+  
+  provinceSelect.innerHTML = '<option value="">选择省份</option>';
+  Object.keys(locationData).forEach(province => {
+    const option = document.createElement('option');
+    option.value = province;
+    option.textContent = province;
+    provinceSelect.appendChild(option);
+  });
+  
+  provinceSelect.disabled = false;
+  $('hotelModalCity').disabled = true;
+  $('hotelModalDistrict').disabled = true;
+}
+
+function populateHotelCityDropdown() {
+  const provinceSelect = $('hotelModalProvince');
+  const citySelect = $('hotelModalCity');
+  const districtSelect = $('hotelModalDistrict');
+  
+  citySelect.innerHTML = '<option value="">选择城市</option>';
+  districtSelect.innerHTML = '<option value="">选择区县</option>';
+  citySelect.disabled = true;
+  districtSelect.disabled = true;
+  
+  const selectedProvince = provinceSelect.value;
+  if (selectedProvince && locationData[selectedProvince]) {
+    citySelect.disabled = false;
+    Object.keys(locationData[selectedProvince]).forEach(city => {
+      const option = document.createElement('option');
+      option.value = city;
+      option.textContent = city;
+      citySelect.appendChild(option);
+    });
+  }
+}
+
+function populateHotelDistrictDropdown() {
+  const provinceSelect = $('hotelModalProvince');
+  const citySelect = $('hotelModalCity');
+  const districtSelect = $('hotelModalDistrict');
+  
+  districtSelect.innerHTML = '<option value="">选择区县</option>';
+  districtSelect.disabled = true;
+  
+  const selectedProvince = provinceSelect.value;
+  const selectedCity = citySelect.value;
+  
+  if (selectedProvince && selectedCity && locationData[selectedProvince] && locationData[selectedProvince][selectedCity]) {
+    districtSelect.disabled = false;
+    locationData[selectedProvince][selectedCity].forEach(district => {
+      const option = document.createElement('option');
+      option.value = district;
+      option.textContent = district;
+      districtSelect.appendChild(option);
+    });
+  }
+}
+
+function getHotelLocationValue() {
+  const province = $('hotelModalProvince').value;
+  const city = $('hotelModalCity').value;
+  const district = $('hotelModalDistrict').value;
+  
+  if (!province) return '';
+  if (!city) return province;
+  if (!district) return province + ' - ' + city;
+  return province + ' - ' + city + ' - ' + district;
+}
+
+function setHotelLocationValue(locationStr) {
+  if (!locationStr) return;
+  
+  const parts = locationStr.split(' - ');
+  const province = parts[0] || '';
+  const city = parts[1] || '';
+  const district = parts[2] || '';
+  
+  $('hotelModalProvince').value = province;
+  populateHotelCityDropdown();
+  
+  setTimeout(() => {
+    $('hotelModalCity').value = city;
+    populateHotelDistrictDropdown();
+    
+    setTimeout(() => {
+      $('hotelModalDistrict').value = district;
+    }, 50);
+  }, 50);
+}
+
+function openHotelModal(hotelId = null) {
+  editingHotelId = hotelId;
+  
+  initHotelLocationDropdowns();
+  
+  if (hotelId) {
+    const hotel = appData.hotels.find(h => h.id === hotelId);
+    if (!hotel) return;
+    
+    $('hotelModalTitle').textContent = '编辑酒店';
+    $('hotelModalName').value = hotel.name || '';
+    setHotelLocationValue(hotel.location || '');
+    $('hotelModalAddress').value = hotel.address || '';
+    $('hotelModalPhone').value = hotel.phone || '';
+    $('hotelModalCheckIn').value = hotel.checkInTime || '';
+    $('hotelModalCheckOut').value = hotel.checkOutTime || '';
+    $('hotelModalNotes').value = hotel.notes || '';
+  } else {
+    $('hotelModalTitle').textContent = '新增酒店';
+    $('hotelModalName').value = '';
+    $('hotelModalProvince').value = '';
+    $('hotelModalCity').value = '';
+    $('hotelModalDistrict').value = '';
+    $('hotelModalAddress').value = '';
+    $('hotelModalPhone').value = '';
+    $('hotelModalCheckIn').value = '14:00';
+    $('hotelModalCheckOut').value = '12:00';
+    $('hotelModalNotes').value = '';
+  }
+  
+  $('hotelModal').style.display = 'flex';
+}
+
+function saveHotel() {
+  const name = $('hotelModalName').value.trim();
+  if (!name) {
+    showToast('请输入酒店名称', 'error');
+    return;
+  }
+  
+  const hotelData = {
+    id: editingHotelId || 'hotel_' + Date.now(),
+    name: name,
+    location: getHotelLocationValue(),
+    address: $('hotelModalAddress').value.trim(),
+    phone: $('hotelModalPhone').value.trim(),
+    checkInTime: $('hotelModalCheckIn').value.trim(),
+    checkOutTime: $('hotelModalCheckOut').value.trim(),
+    notes: $('hotelModalNotes').value.trim()
+  };
+  
+  if (editingHotelId) {
+    const index = appData.hotels.findIndex(h => h.id === editingHotelId);
+    if (index !== -1) {
+      appData.hotels[index] = { ...appData.hotels[index], ...hotelData };
+    }
+  } else {
+    if (!appData.hotels) appData.hotels = [];
+    appData.hotels.push(hotelData);
+  }
+  
+  localStorage.setItem('appData', JSON.stringify(appData));
+  $('hotelsCount').textContent = appData.hotels.length;
+  closeHotelModal();
+  renderHotelsList();
+  showToast('保存成功！', 'success');
+}
+
+function deleteHotel(hotelId) {
+  if (!confirm('确定要删除这个酒店吗？')) return;
+  
+  appData.hotels = appData.hotels.filter(h => h.id !== hotelId);
+  localStorage.setItem('appData', JSON.stringify(appData));
+  $('hotelsCount').textContent = appData.hotels.length;
+  renderHotelsList();
+  showToast('删除成功！', 'info');
+}
+
+function closeHotelModal() {
+  const hotelModal = $('hotelModal');
+  if (hotelModal) {
+    hotelModal.style.display = 'none';
+    editingHotelId = null;
+  }
+}
+
+function initApp() {
+  const savedConfig = sessionStorage.getItem('githubConfig');
+  if (savedConfig) {
+    githubConfig = JSON.parse(savedConfig);
+    showAdminPage();
+  } else {
+    hideLoading();
+  }
+  initEventListeners();
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
