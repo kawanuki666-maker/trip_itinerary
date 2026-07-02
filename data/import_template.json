@@ -1,0 +1,132 @@
+{
+  "locations": {
+    "国内": {
+      "陕西省": {
+        "西安市": ["碑林区", "雁塔区", "莲湖区"],
+        "咸阳市": ["渭城区"]
+      }
+    },
+    "国外": {}
+  },
+
+  "spots": [
+    {
+      "name": "秦始皇兵马俑",
+      "city": "陕西省 - 西安市 - 临潼区",
+      "brief": "世界第八大奇迹，秦始皇陵陪葬坑中的陶俑群",
+      "hours": "08:30-18:00",
+      "ticket": "120元",
+      "needReservation": true,
+      "description": "秦始皇兵马俑是世界文化遗产，被誉为世界第八大奇迹。"
+    },
+    {
+      "name": "大雁塔",
+      "city": "陕西省 - 西安市 - 雁塔区",
+      "brief": "唐代著名佛塔，玄奘法师主持修建",
+      "hours": "08:00-18:30",
+      "ticket": "50元",
+      "needReservation": false,
+      "description": "大雁塔位于大慈恩寺内，是唐代玄奘法师为保存经卷而建。"
+    },
+    {
+      "name": "西安城墙",
+      "city": "陕西省 - 西安市 - 碑林区",
+      "brief": "中国现存规模最大、保存最完整的古代城垣",
+      "hours": "08:00-22:00",
+      "ticket": "54元",
+      "needReservation": false,
+      "description": "西安城墙始建于明代，是中国现存最完整的古代城墙。"
+    },
+    {
+      "name": "回民街",
+      "city": "陕西省 - 西安市 - 莲湖区",
+      "brief": "西安著名美食街，回族文化聚集地",
+      "hours": "全天开放",
+      "ticket": "免费",
+      "needReservation": false,
+      "description": "回民街是西安最具人气的美食街，汇集各种陕西小吃。"
+    },
+    {
+      "name": "乾陵",
+      "city": "陕西省 - 咸阳市 - 乾县",
+      "brief": "唐高宗李治与武则天的合葬墓",
+      "hours": "08:00-18:00",
+      "ticket": "100元",
+      "needReservation": false,
+      "description": "乾陵是中国历史上唯一的两位皇帝合葬陵墓。"
+    }
+  ],
+
+  "hotels": [
+    {
+      "name": "西安钟楼亚朵酒店",
+      "location": "陕西省 - 西安市 - 碑林区",
+      "address": "钟楼旁南大街",
+      "phone": "029-xxxxxxx",
+      "checkInTime": "14:00",
+      "checkOutTime": "12:00",
+      "notes": "含早餐，步行可达钟楼、回民街"
+    }
+  ],
+
+  "trips": [
+    {
+      "title": "西安四日",
+      "startDate": "2026-09-10",
+      "endDate": "2026-09-13",
+      "subtitle": "千年古都的历史穿越",
+      "description": "从兵马俑的秦代军阵，到大雁塔的唐风遗韵；从明城墙的巍峨壮阔，到回民街的市井烟火——感受十三朝古都的深厚底蕴。",
+      "days": [
+        {
+          "day": 1,
+          "title": "古城初探",
+          "theme": "城垣漫步",
+          "spots": ["西安城墙", "回民街"],
+          "accommodation": "西安钟楼亚朵酒店",
+          "transport": "高铁抵达西安北站，地铁2号线到钟楼站",
+          "note": "晚上逛回民街吃小吃"
+        },
+        {
+          "day": 2,
+          "title": "盛唐气象",
+          "theme": "唐代文化",
+          "spots": ["大雁塔", "秦始皇兵马俑"],
+          "accommodation": "西安钟楼亚朵酒店",
+          "transport": "上午大雁塔，下午坐地铁去兵马俑",
+          "note": "兵马俑建议请讲解员"
+        },
+        {
+          "day": 3,
+          "title": "皇陵探秘",
+          "theme": "帝陵文化",
+          "spots": ["乾陵"],
+          "accommodation": "西安钟楼亚朵酒店",
+          "transport": "咸阳方向，需包车或坐大巴",
+          "note": "乾陵离市区较远，建议早出发"
+        },
+        {
+          "day": 4,
+          "title": "市区闲逛",
+          "theme": "市井生活",
+          "spots": [],
+          "accommodation": null,
+          "transport": "下午返程",
+          "note": "上午可以买点特产"
+        }
+      ],
+      "platforms": [
+        {
+          "name": "西安地铁",
+          "uses": ["钟楼站↔大雁塔站", "钟楼站↔北客站"]
+        }
+      ],
+      "reservations": [
+        {
+          "spot": "秦始皇兵马俑",
+          "platform": "秦始皇兵马俑博物院公众号",
+          "advance": "3"
+        }
+      ]
+    }
+  ]
+}

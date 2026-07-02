@@ -9,26 +9,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #fafafa;
+  --bg: #f7f6f3;
   --surface: #ffffff;
-  --surface-2: #f5f5f5;
-  --surface-3: #eeeeee;
-  --text: #1a1a1a;
-  --text-mid: #666666;
-  --text-dim: #999999;
-  --accent: #c4a882;
-  --accent-hover: #b39670;
-  --accent-dim: rgba(196,168,130,0.1);
-  --border: #e5e5e5;
-  --border-light: #eeeeee;
-  --shadow: 0 1px 4px rgba(0,0,0,0.04);
-  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
-  --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
-  --warning: #e6a23c;
-  --warning-dim: rgba(230,162,60,0.1);
+  --surface-2: #f9f8f6;
+  --surface-3: #f0efec;
+  --text: #1c1917;
+  --text-mid: #57534e;
+  --text-dim: #a8a29e;
+  --accent: #b08d6a;
+  --accent-hover: #9a7a5a;
+  --accent-dim: rgba(176,141,106,0.08);
+  --accent-light: rgba(176,141,106,0.15);
+  --border: #e7e5e4;
+  --border-light: #f0efec;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+  --shadow: 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+  --warning: #d97706;
+  --warning-dim: rgba(217,119,6,0.07);
+  --success: #16a34a;
+  --success-dim: rgba(22,163,74,0.07);
+  --info: #2563eb;
+  --info-dim: rgba(37,99,235,0.07);
   --font-title: 'Noto Serif SC', Georgia, 'Songti SC', 'SimSun', serif;
   --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --detail-width: 380px;
+  --detail-width: 400px;
+  --radius: 10px;
+  --radius-sm: 6px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,99 +47,250 @@ body {
   background: var(--bg);
   line-height: 1.6;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
-* { scrollbar-width: thin; scrollbar-color: #ddd transparent; }
+::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: #d6d3d1 transparent; }
 
 /* ========== Hero Section ========== */
 .hero {
   position: relative;
   width: 100%;
-  min-height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
   overflow: hidden;
-  margin: 0 auto;
-  padding: 40px 0;
+  background: linear-gradient(135deg, #f5f0eb 0%, #ede8e1 50%, #e8e2d9 100%);
+  padding: 0;
 }
 
-.hero-card {
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(176,141,106,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(176,141,106,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-inner {
   position: relative;
   z-index: 1;
-  background: #fff;
-  padding: 40px 48px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 56px 24px 48px;
   text-align: center;
-  min-width: 280px;
-  max-width: 560px;
-  border: 1px solid #e8e8e8;
-  border-radius: 0;
+}
+
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  padding: 5px 14px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(176,141,106,0.15);
+  border-radius: 20px;
+}
+
+.hero-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
 }
 
 .hero-title {
   font-family: var(--font-title);
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 36px;
+  font-weight: 700;
   color: var(--text);
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+  line-height: 1.3;
 }
 
 .hero-subtitle {
+  font-size: 15px;
+  color: var(--text-mid);
+  margin-bottom: 24px;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 13px;
   color: var(--text-mid);
-  margin-bottom: 12px;
+}
+
+.hero-meta-item svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.8;
 }
 
 .hero-divider {
-  width: 32px;
-  height: 2px;
-  background: var(--accent);
-  margin: 16px auto;
-}
-
-.hero-dates {
-  font-size: 12px;
-  color: var(--text-dim);
-  margin-bottom: 16px;
+  width: 40px;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin: 20px auto;
 }
 
 .hero-description {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-mid);
-  line-height: 1.6;
-  max-width: 400px;
+  line-height: 1.8;
+  max-width: 520px;
   margin: 0 auto;
+  font-weight: 300;
+}
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(176,141,106,0.12);
+}
+
+.hero-stat {
+  text-align: center;
+}
+
+.hero-stat-value {
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.hero-stat-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  letter-spacing: 0.5px;
 }
 
 /* ========== Mobile Hero ========== */
 @media (max-width: 768px) {
-  .hero {
-    min-height: 120px;
-    padding: 24px 0;
+  .hero-inner {
+    padding: 36px 20px 32px;
   }
+  .hero-title { font-size: 26px; letter-spacing: 1px; }
+  .hero-subtitle { font-size: 13px; }
+  .hero-stats { gap: 24px; }
+  .hero-stat-value { font-size: 18px; }
+}
 
-  .hero-card {
-    padding: 24px 32px;
-    margin: 0 16px;
-  }
+@media (min-width: 768px) {
+  .hero-inner { padding: 64px 32px 56px; }
+  .hero-title { font-size: 42px; }
+}
 
-  .hero-title {
-    font-size: 20px;
-  }
-  
-  .hero-subtitle {
-    font-size: 12px;
-  }
+@media (min-width: 1024px) {
+  .hero-inner { padding: 72px 32px 64px; }
+  .hero-title { font-size: 48px; }
+}
+
+/* ========== Sticky Nav ========== */
+.content-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0;
+  margin: -20px -20px 16px -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background: var(--bg);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.content-nav.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.content-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-mid);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.content-nav-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.content-nav-btn svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.content-nav-btn .nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--warning);
+  color: #fff;
+  border-radius: 8px;
+  margin-left: 2px;
 }
 
 /* ========== Main Layout ========== */
 .main-container {
   display: flex;
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   min-height: calc(100vh - 280px);
 }
@@ -139,7 +298,7 @@ body {
 /* ========== Content Area (Left) ========== */
 .content-area {
   flex: 1;
-  padding: 24px;
+  padding: 20px;
   overflow-y: auto;
   max-width: calc(100% - var(--detail-width));
 }
@@ -148,44 +307,49 @@ body {
 .day-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  margin-bottom: 20px;
-  transition: all 0.3s;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s, transform 0.2s;
+  overflow: hidden;
 }
 
 .day-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .day-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
+  padding: 18px 22px;
   cursor: pointer;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .day-header:hover {
-  background: var(--surface-3);
-}
-
-.day-header-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  background: var(--surface-2);
 }
 
 .day-number-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: var(--accent);
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: #fff;
   font-size: 13px;
   font-weight: 600;
   flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(176,141,106,0.2);
+}
+
+.day-header-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .day-title {
@@ -193,78 +357,128 @@ body {
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
-  flex: 1;
+  line-height: 1.4;
 }
 
 .day-meta {
   display: flex;
-  gap: 12px;
-  font-size: 12px;
-  color: var(--text-mid);
+  gap: 10px;
+  align-items: center;
   margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-dim);
 }
 
-.day-theme {
-  font-weight: 500;
+.day-meta-dot {
+  width: 3px;
+  height: 3px;
+  background: var(--text-dim);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.day-theme-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--accent-dim);
   color: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 3px;
+}
+
+.day-toggle-icon {
+  width: 20px;
+  height: 20px;
+  stroke: var(--text-dim);
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+
+.day-card.collapsed .day-toggle-icon {
+  transform: rotate(-90deg);
 }
 
 .day-body {
-  padding: 16px 20px;
+  padding: 0 22px 20px;
+  border-top: 1px solid var(--border-light);
 }
 
+.day-card.collapsed .day-body {
+  display: none;
+}
+
+/* ========== Day Section ========== */
 .day-section {
-  margin-bottom: 16px;
+  margin-top: 16px;
 }
 
-.day-section:last-child {
-  margin-bottom: 0;
+.day-section:first-child {
+  margin-top: 18px;
 }
 
 .day-section-header {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border-light);
 }
 
 .day-section-header svg {
   width: 14px;
   height: 14px;
   stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.day-section-header .section-count {
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 /* ========== Spot & Hotel List ========== */
 .spot-list, .hotel-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .spot-item, .hotel-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
   padding: 12px 14px;
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition: all 0.2s;
+  position: relative;
 }
 
 .spot-item:hover, .hotel-item:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-light);
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .spot-item.selected, .hotel-item.selected {
   border-color: var(--accent);
   background: var(--accent-dim);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .spot-info, .hotel-info {
@@ -276,28 +490,44 @@ body {
   font-weight: 500;
   font-size: 14px;
   color: var(--text);
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.spot-name .spot-tag {
+  font-size: 10px;
+  padding: 1px 5px;
+  flex-shrink: 0;
 }
 
 .spot-brief, .hotel-location {
   font-size: 12px;
-  color: var(--text-mid);
+  color: var(--text-dim);
   margin-top: 2px;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .spot-tags {
   display: flex;
-  gap: 4px;
+  gap: 5px;
   flex-shrink: 0;
+  align-items: center;
 }
 
 .spot-tag {
   font-size: 10px;
-  padding: 2px 6px;
+  padding: 2px 7px;
   background: var(--accent-dim);
   color: var(--accent);
+  border-radius: 3px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .spot-tag.reservation {
@@ -305,36 +535,56 @@ body {
   color: var(--warning);
 }
 
+.spot-tag.free {
+  background: var(--success-dim);
+  color: var(--success);
+}
+
 .item-arrow {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   stroke: var(--text-dim);
   flex-shrink: 0;
-  margin-left: 8px;
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.spot-item:hover .item-arrow,
+.hotel-item:hover .item-arrow {
+  opacity: 0.7;
+  transform: translateX(2px);
 }
 
 /* ========== Transport & Note ========== */
 .transport-text, .note-text {
   font-size: 13px;
-  color: var(--text);
-  line-height: 1.6;
-  padding: 10px 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  padding: 12px 14px;
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
 }
 
 .note-text {
   background: var(--warning-dim);
   border-left: 3px solid var(--warning);
+  color: #92400e;
 }
 
-/* ========== Platforms Section ========== */
+.transport-text svg, .note-text svg {
+  display: none;
+}
+
+/* ========== Platforms & Reservations Section ========== */
 .section-block {
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 20px;
-  margin-bottom: 20px;
-  transition: all 0.3s;
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s;
 }
 
 .section-block:hover {
@@ -346,7 +596,7 @@ body {
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -356,6 +606,8 @@ body {
   width: 18px;
   height: 18px;
   stroke: var(--accent);
+  fill: none;
+  stroke-width: 2;
 }
 
 .platform-list, .reservation-list {
@@ -364,33 +616,35 @@ body {
   gap: 8px;
 }
 
-.platform-item, .reservation-item {
-  padding: 12px 14px;
+.platform-item {
+  padding: 14px 16px;
   background: var(--surface-2);
-  border: 1px solid var(--border);
-  font-size: 13px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
 }
 
-.platform-name, .reservation-spot {
+.platform-name {
   font-weight: 500;
   color: var(--text);
-  flex-shrink: 0;
+  font-size: 14px;
 }
 
 .platform-uses {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .platform-use-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 4px 10px;
-  background: var(--bg-secondary);
+  background: var(--bg);
   border-radius: 4px;
   font-size: 12px;
-  color: var(--text-dim);
+  color: var(--text-mid);
+  border: 1px solid var(--border-light);
 }
 
 .platform-use, .reservation-info {
@@ -398,7 +652,49 @@ body {
 }
 
 .reservation-item {
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-light);
   border-left: 3px solid var(--warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reservation-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--warning-dim);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.reservation-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--warning);
+  fill: none;
+  stroke-width: 2;
+}
+
+.reservation-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.reservation-spot {
+  font-weight: 500;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.reservation-info {
+  font-size: 12px;
+  margin-top: 2px;
 }
 
 .reservation-due {
@@ -419,12 +715,12 @@ body {
 }
 
 .detail-panel-header {
-  padding: 16px 20px;
+  padding: 18px 22px;
   border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
   position: sticky;
   top: 0;
   z-index: 10;
+  background: var(--surface);
 }
 
 .detail-panel-title {
@@ -435,12 +731,12 @@ body {
 }
 
 .detail-panel-body {
-  padding: 20px;
+  padding: 22px;
 }
 
 .detail-empty {
   text-align: center;
-  padding: 60px 20px;
+  padding: 60px 24px;
   color: var(--text-dim);
 }
 
@@ -448,16 +744,17 @@ body {
   width: 48px;
   height: 48px;
   stroke: var(--border);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .detail-empty p {
   font-size: 13px;
+  line-height: 1.6;
 }
 
 /* ========== Detail Content ========== */
 .detail-section {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .detail-section:last-child {
@@ -465,28 +762,40 @@ body {
 }
 
 .detail-section-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border-light);
 }
 
 .detail-name {
   font-family: var(--font-title);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 6px;
+  line-height: 1.4;
 }
 
 .detail-location {
   font-size: 13px;
   color: var(--text-mid);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.detail-location svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--text-dim);
+  fill: none;
+  stroke-width: 2;
 }
 
 .detail-row {
@@ -494,12 +803,17 @@ body {
   gap: 8px;
   margin-bottom: 10px;
   font-size: 13px;
+  line-height: 1.5;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
 }
 
 .detail-label {
   color: var(--text-dim);
   flex-shrink: 0;
-  min-width: 60px;
+  min-width: 65px;
 }
 
 .detail-value {
@@ -509,14 +823,20 @@ body {
 .detail-description {
   font-size: 13px;
   color: var(--text-mid);
-  line-height: 1.7;
-  margin-top: 12px;
+  line-height: 1.8;
+}
+
+.detail-tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 /* ========== Empty State ========== */
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 40px 24px;
   color: var(--text-dim);
 }
 
@@ -524,54 +844,36 @@ body {
   width: 48px;
   height: 48px;
   stroke: var(--border);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .empty-state p {
   font-size: 13px;
+  line-height: 1.6;
 }
 
 /* ========== Responsive ========== */
-@media (min-width: 768px) {
-  .hero {
-    min-height: 320px;
-  }
-  
-  .hero-title {
-    font-size: 40px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .hero {
-    min-height: 360px;
-  }
-  
-  .hero-title {
-    font-size: 48px;
-  }
-  
-  .content-area {
-    padding: 32px 40px;
-  }
-}
-
-/* Mobile: Hide detail panel, use modal instead */
 @media (max-width: 1023px) {
   .main-container {
     display: block;
   }
-  
+
   .content-area {
     max-width: 100%;
   }
-  
+
   .detail-panel {
     display: none;
   }
-  
+
   .mobile-detail-modal {
     display: flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-area {
+    padding: 28px 36px;
   }
 }
 
@@ -599,14 +901,20 @@ body {
 }
 
 .mobile-detail-close {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--surface-2);
   border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mobile-detail-close:hover {
+  background: var(--surface-3);
 }
 
 .mobile-detail-close svg {
@@ -618,7 +926,10 @@ body {
 .mobile-detail-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
 }
 </style>
 </head>
@@ -653,11 +964,12 @@ body {
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border: 2px solid var(--border);
   border-top-color: var(--accent);
-  animation: spin 1s linear infinite;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -702,50 +1014,88 @@ function getHotelById(id) {
   return hotels.find(h => h.id === id);
 }
 
+function daysBetween(start, end) {
+  if (!start || !end) return 0;
+  const s = new Date(start);
+  const e = new Date(end);
+  return Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+}
+
 // ========== Render Functions ==========
 function renderHero() {
   const trip = currentTrip;
   if (!trip) return '';
-  
-  const dates = trip.startDate && trip.endDate
-    ? `${formatDate(trip.startDate)} — ${formatDate(trip.endDate)}`
-    : '';
-  
+
+  const startDate = trip.startDate ? formatDate(trip.startDate) : '';
+  const endDate = trip.endDate ? formatDate(trip.endDate) : '';
+  const totalDays = daysBetween(trip.startDate, trip.endDate);
+  const totalSpots = spots.length;
+  const uniqueCities = [...new Set(spots.map(s => s.city ? s.city.split(' - ')[1] : '').filter(Boolean))];
+
   return `
     <div class="hero">
-      <div class="hero-card">
+      <div class="hero-inner">
+        <div class="hero-label">Travel Itinerary</div>
         <h1 class="hero-title">${trip.title || '未命名行程'}</h1>
         ${trip.subtitle ? `<p class="hero-subtitle">${trip.subtitle}</p>` : ''}
         <div class="hero-divider"></div>
-        ${dates ? `<p class="hero-dates">${dates}</p>` : ''}
+        <div class="hero-meta">
+          ${startDate ? `
+          <span class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${startDate} — ${endDate}
+          </span>` : ''}
+          ${uniqueCities.length > 0 ? `
+          <span class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${uniqueCities.join(' / ')}
+          </span>` : ''}
+        </div>
         ${trip.description ? `<p class="hero-description">${trip.description.replace(/\n/g, '<br>')}</p>` : ''}
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value">${totalDays}</div>
+            <div class="hero-stat-label">天</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">${totalSpots}</div>
+            <div class="hero-stat-label">景点</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">${uniqueCities.length}</div>
+            <div class="hero-stat-label">城市</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">${reservations.length}</div>
+            <div class="hero-stat-label">待预约</div>
+          </div>
+        </div>
       </div>
     </div>
   `;
 }
 
 function renderSpots(spotIds) {
-  if (!spotIds || spotIds.length === 0) {
-    return '<div class="empty-state"><p>暂无景点</p></div>';
-  }
-  
+  if (!spotIds || spotIds.length === 0) return '';
+
   return spotIds.map(spotId => {
     const spot = getSpotById(spotId);
     if (!spot) return '';
-    
+
     const isSelected = selectedSpotId === spotId;
     const cityShort = spot.city ? spot.city.split(' - ').pop() : '';
-    
+
     return `
       <div class="spot-item ${isSelected ? 'selected' : ''}" onclick="selectSpot('${spot.id}')">
         <div class="spot-info">
-          <div class="spot-name">${spot.name}</div>
-          <div class="spot-brief">${spot.brief || ''}</div>
+          <div class="spot-name">
+            ${spot.name}
+            ${spot.needReservation ? '<span class="spot-tag reservation">需预约</span>' : ''}
+            ${spot.ticket && spot.ticket.includes('免费') ? '<span class="spot-tag free">免费</span>' : ''}
+          </div>
+          ${spot.brief ? `<div class="spot-brief">${spot.brief}</div>` : ''}
         </div>
-        <div class="spot-tags">
-          ${cityShort ? `<span class="spot-tag">${cityShort}</span>` : ''}
-          ${spot.needReservation ? '<span class="spot-tag reservation">需预约</span>' : ''}
-        </div>
+        ${cityShort ? `<span class="spot-tag">${cityShort}</span>` : ''}
         <svg class="item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
@@ -755,20 +1105,19 @@ function renderSpots(spotIds) {
 }
 
 function renderHotels(accommodation) {
-  if (!accommodation || !accommodation.hotelId) {
-    return '<div class="empty-state"><p>暂无住宿</p></div>';
-  }
-  
+  if (!accommodation || !accommodation.hotelId) return '';
+
   const hotel = getHotelById(accommodation.hotelId);
-  if (!hotel) return '<div class="empty-state"><p>住宿信息未找到</p></div>';
-  
+  if (!hotel) return '';
+
   const isSelected = selectedHotelId === hotel.id;
   const cityShort = hotel.location ? hotel.location.split(' - ').pop() : '';
-  
+
   return `
     <div class="hotel-item ${isSelected ? 'selected' : ''}" onclick="selectHotel('${hotel.id}')">
       <div class="hotel-info">
         <div class="hotel-name">${hotel.name}</div>
+        ${hotel.address ? `<div class="hotel-location">${hotel.address}</div>` : ''}
       </div>
       <div class="spot-tags">
         ${cityShort ? `<span class="spot-tag">${cityShort}</span>` : ''}
@@ -785,70 +1134,63 @@ function renderDayCard(day, index) {
   if (dayDate) {
     dayDate.setDate(dayDate.getDate() + day.day - 1);
   }
-  
+
   const dateStr = dayDate ? `${dayDate.getMonth() + 1}月${dayDate.getDate()}日` : '';
   const weekdayStr = dayDate ? formatWeekday(dayDate.toISOString()) : '';
-  
+  const spotCount = (day.spotIds || []).length;
+
   return `
     <div class="day-card" id="day-${day.day}">
       <div class="day-header" onclick="toggleDay(${day.day})">
-        <div class="day-header-content">
-          <span class="day-number-badge">D${day.day}</span>
-          <div>
-            <div class="day-title">${day.title || ''}</div>
-            <div class="day-meta">
-              ${dateStr ? `<span>${dateStr}</span>` : ''}
-              ${weekdayStr ? `<span>${weekdayStr}</span>` : ''}
-              ${day.theme ? `<span class="day-theme">${day.theme}</span>` : ''}
-            </div>
+        <span class="day-number-badge">D${day.day}</span>
+        <div class="day-header-info">
+          <div class="day-title">${day.title || '日程安排'}</div>
+          <div class="day-meta">
+            ${dateStr ? `<span>${dateStr}</span>` : ''}
+            ${dateStr && weekdayStr ? `<span class="day-meta-dot"></span>` : ''}
+            ${weekdayStr ? `<span>${weekdayStr}</span>` : ''}
+            ${day.theme ? `<span class="day-meta-dot"></span>` : ''}
+            ${day.theme ? `<span class="day-theme-tag">${day.theme}</span>` : ''}
           </div>
         </div>
+        <svg class="day-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
       </div>
       <div class="day-body" id="day-body-${day.day}">
         <div class="day-section">
           <div class="day-section-header">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             景点
+            <span class="section-count">${spotCount} 个</span>
           </div>
           <div class="spot-list">${renderSpots(day.spotIds)}</div>
         </div>
-        
+
+        ${(day.accommodation && day.accommodation.hotelId) ? `
         <div class="day-section">
           <div class="day-section-header">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             住宿
           </div>
           <div class="hotel-list">${renderHotels(day.accommodation)}</div>
         </div>
-        
+        ` : ''}
+
         ${day.transport ? `
         <div class="day-section">
           <div class="day-section-header">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <circle cx="5.5" cy="17.5" r="2.5"></circle>
-              <circle cx="18.5" cy="17.5" r="2.5"></circle>
-              <path d="M8 17h8M3 9h18l-2 8H5L3 9z"></path>
-            </svg>
+            <svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M8 17h8M3 9h18l-2 8H5L3 9z"/></svg>
             交通
           </div>
           <div class="transport-text">${day.transport}</div>
         </div>
         ` : ''}
-        
+
         ${day.note ? `
         <div class="day-section">
           <div class="day-section-header">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             备注
           </div>
           <div class="note-text">${day.note}</div>
@@ -861,15 +1203,11 @@ function renderDayCard(day, index) {
 
 function renderPlatformsSection() {
   if (!platforms || platforms.length === 0) return '';
-  
+
   return `
-    <div class="section-block">
+    <div class="section-block" id="section-platforms">
       <h2 class="section-block-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-        </svg>
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         购票平台
       </h2>
       <div class="platform-list">
@@ -891,27 +1229,30 @@ function renderPlatformsSection() {
 
 function renderReservationsSection() {
   if (!reservations || reservations.length === 0) return '';
-  
+
   return `
-    <div class="section-block">
+    <div class="section-block" id="section-reservations">
       <h2 class="section-block-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <path d="M22 11h-6.11a1 1 0 0 1-.89-.55l-2-4a1 1 0 0 0-1.78 0l-2 4a1 1 0 0 1-.89.55H2"></path>
-          <circle cx="12" cy="12" r="10"></circle>
-        </svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         预约提醒
+        <span style="margin-left:auto;font-size:12px;color:var(--warning);font-weight:400;font-family:var(--font-body)">${reservations.length} 项待处理</span>
       </h2>
       <div class="reservation-list">
         ${reservations.map(r => {
           const spot = getSpotById(r.spotId);
           return `
             <div class="reservation-item">
-              <span class="reservation-spot">${spot ? spot.name : '未知景点'}</span>
-              <span class="reservation-info">
-                ${r.platform ? `${r.platform}` : ''}
-                ${r.advance ? ` · 提前${r.advance}天` : ''}
-                ${r.dueDate ? ` · 截止${r.dueDate}` : ''}
-              </span>
+              <div class="reservation-icon">
+                <svg viewBox="0 0 24 24"><path d="M22 11h-6.11a1 1 0 0 1-.89-.55l-2-4a1 1 0 0 0-1.78 0l-2 4a1 1 0 0 1-.89.55H2"/></svg>
+              </div>
+              <div class="reservation-body">
+                <div class="reservation-spot">${spot ? spot.name : '未知景点'}</div>
+                <div class="reservation-info">
+                  ${r.platform ? `${r.platform}` : ''}
+                  ${r.advance ? ` · 提前${r.advance}天` : ''}
+                  ${r.dueDate ? ` · 截止${r.dueDate}` : ''}
+                </div>
+              </div>
             </div>
           `;
         }).join('')}
@@ -921,44 +1262,47 @@ function renderReservationsSection() {
 }
 
 function renderDetailPanel() {
-  // Check if we have selected spot or hotel
   if (selectedSpotId) {
     const spot = getSpotById(selectedSpotId);
-    if (spot) {
-      return renderSpotDetail(spot, true);
-    }
+    if (spot) return renderSpotDetail(spot, true);
   }
-  
+
   if (selectedHotelId) {
     const hotel = getHotelById(selectedHotelId);
-    if (hotel) {
-      return renderHotelDetail(hotel, true);
-    }
+    if (hotel) return renderHotelDetail(hotel, true);
   }
-  
-  // Empty state
+
   return `
     <div class="detail-empty">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="8" x2="12" y2="12"></line>
-        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      <p>点击左侧景点或住宿<br>查看详情</p>
+      <p>点击左侧景点或住宿<br>查看详细信息</p>
     </div>
   `;
 }
 
-function renderSpotDetail(spot, isPanel = false) {
+function renderSpotDetail(spot) {
   const cityShort = spot.city ? spot.city.split(' - ').pop() : '';
-  
+
   let html = `
     <div class="detail-section">
       <div class="detail-name">${spot.name}</div>
-      ${cityShort ? `<div class="detail-location">${cityShort}</div>` : ''}
+      ${cityShort ? `
+      <div class="detail-location">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${spot.city}
+      </div>` : ''}
+      <div class="detail-tag-group">
+        ${spot.ticket ? `<span class="spot-tag">${spot.ticket}</span>` : ''}
+        ${spot.needReservation ? '<span class="spot-tag reservation">需预约</span>' : ''}
+        ${spot.hours ? `<span class="spot-tag">${spot.hours}</span>` : ''}
+      </div>
     </div>
   `;
-  
+
   if (spot.brief) {
     html += `
       <div class="detail-section">
@@ -967,7 +1311,7 @@ function renderSpotDetail(spot, isPanel = false) {
       </div>
     `;
   }
-  
+
   if (spot.hours || spot.ticket) {
     html += `<div class="detail-section">`;
     if (spot.hours) {
@@ -988,27 +1332,31 @@ function renderSpotDetail(spot, isPanel = false) {
     }
     html += `</div>`;
   }
-  
+
   if (spot.description) {
     html += `
       <div class="detail-section">
-        <div class="detail-section-title">详情</div>
+        <div class="detail-section-title">详细介绍</div>
         <div class="detail-description">${spot.description}</div>
       </div>
     `;
   }
-  
+
   return html;
 }
 
-function renderHotelDetail(hotel, isPanel = false) {
+function renderHotelDetail(hotel) {
   let html = `
     <div class="detail-section">
       <div class="detail-name">${hotel.name}</div>
-      ${hotel.location ? `<div class="detail-location">${hotel.location}</div>` : ''}
+      ${hotel.location ? `
+      <div class="detail-location">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${hotel.location}
+      </div>` : ''}
     </div>
   `;
-  
+
   html += `<div class="detail-section">`;
   if (hotel.address) {
     html += `
@@ -1028,8 +1376,12 @@ function renderHotelDetail(hotel, isPanel = false) {
   }
   html += `
     <div class="detail-row">
-      <span class="detail-label">入住/退房</span>
-      <span class="detail-value">${hotel.checkInTime || '14:00'} / ${hotel.checkOutTime || '12:00'}</span>
+      <span class="detail-label">入住</span>
+      <span class="detail-value">${hotel.checkInTime || '14:00'}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">退房</span>
+      <span class="detail-value">${hotel.checkOutTime || '12:00'}</span>
     </div>
   `;
   if (hotel.notes) {
@@ -1041,7 +1393,7 @@ function renderHotelDetail(hotel, isPanel = false) {
     `;
   }
   html += `</div>`;
-  
+
   return html;
 }
 
@@ -1075,9 +1427,10 @@ function updateSpotSelection() {
 }
 
 function toggleDay(dayNum) {
+  const card = $(`day-${dayNum}`);
   const body = $(`day-body-${dayNum}`);
-  if (body) {
-    body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  if (card && body) {
+    card.classList.toggle('collapsed');
   }
 }
 
@@ -1086,7 +1439,7 @@ function openMobileDetail() {
   const modal = $('mobileDetailModal');
   const content = $('mobileDetailContent');
   const title = $('mobileDetailTitle');
-  
+
   if (selectedSpotId) {
     const spot = getSpotById(selectedSpotId);
     if (spot) {
@@ -1100,7 +1453,7 @@ function openMobileDetail() {
       title.textContent = hotel.name;
     }
   }
-  
+
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1110,47 +1463,84 @@ function closeMobileDetail() {
   document.body.style.overflow = '';
 }
 
+// ========== Navigation ==========
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function initContentNav() {
+  const nav = document.getElementById('contentNav');
+  if (!nav) return;
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        if (window.scrollY > 300) {
+          nav.classList.add('visible');
+        } else {
+          nav.classList.remove('visible');
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+}
+
 // ========== Main ==========
 function init() {
   const viewingTripId = localStorage.getItem('viewingTripId');
   const appDataStr = localStorage.getItem('appData');
-  
+
   if (!viewingTripId || !appDataStr) {
     $('app').innerHTML = `
       <div class="empty-state">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
         <p>未找到行程数据</p>
-        <p style="font-size: 12px; margin-top: 8px;">请从管理后台选择要预览的行程</p>
+        <p style="font-size: 12px; margin-top: 8px; color: var(--text-dim);">请从管理后台选择要预览的行程</p>
       </div>
     `;
     return;
   }
-  
+
   try {
     const appData = JSON.parse(appDataStr);
     const trip = appData.trips?.[viewingTripId];
-    
-    if (!trip) {
-      throw new Error('行程不存在');
-    }
-    
+
+    if (!trip) throw new Error('行程不存在');
+
     currentTrip = trip;
     spots = appData.spots || [];
     hotels = appData.hotels || [];
     days = trip.days || [];
     platforms = trip.platforms || [];
     reservations = trip.reservations || [];
-    
+
     document.title = `${trip.title || '行程预览'} - 预览`;
-    
+
     $('app').innerHTML = `
       ${renderHero()}
       <div class="main-container">
-        <div class="content-area">
+        <div class="content-area" id="contentArea">
+          <nav class="content-nav" id="contentNav">
+            <button class="content-nav-btn" onclick="scrollToSection('section-platforms')">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              购票平台
+            </button>
+            <button class="content-nav-btn" onclick="scrollToSection('section-reservations')">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              预约提醒
+              ${reservations.length > 0 ? `<span class="nav-badge">${reservations.length}</span>` : ''}
+            </button>
+          </nav>
           ${days.map((day, i) => renderDayCard(day, i)).join('')}
           ${renderPlatformsSection()}
           ${renderReservationsSection()}
@@ -1165,10 +1555,7 @@ function init() {
         </aside>
       </div>
     `;
-    
-    // Auto-expand first day
-    // toggleDay(1); // Keep collapsed by default
-    
+
     // Add click handler for mobile
     document.querySelectorAll('.spot-item, .hotel-item').forEach(el => {
       el.addEventListener('click', () => {
@@ -1177,21 +1564,23 @@ function init() {
         }
       });
     });
-    
-    // Clear storage
+
+    // Init sticky nav
+    initContentNav();
+
     localStorage.removeItem('viewingTripId');
-    
+
   } catch (e) {
     console.error('加载行程失败:', e);
     $('app').innerHTML = `
       <div class="empty-state">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="15" y1="9" x2="9" y2="15"></line>
-          <line x1="9" y1="9" x2="15" y2="15"></line>
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
         </svg>
         <p>加载行程失败</p>
-        <p style="font-size: 12px; margin-top: 8px;">${e.message}</p>
+        <p style="font-size: 12px; margin-top: 8px; color: var(--text-dim);">${e.message}</p>
       </div>
     `;
   }

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行程管理 · 管理后台</title>
+<meta name="description" content="行程管理系统管理后台">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <h1 class="login-title">管理后台</h1>
+    <p class="login-subtitle">行程管理系统</p>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">GitHub Personal Access Token</label>
+        <input type="password" class="form-input" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">仓库名称</label>
+        <input type="text" class="form-input" id="repoInput" placeholder="my-itinerary">
+      </div>
+      
+      <button type="submit" class="btn btn-primary" id="loginBtn">进入后台</button>
+      <button type="button" class="btn btn-logout" id="skipLoginBtn" style="width: 100%; margin-top: 12px;">跳过验证直接进入（仅本地测试）</button>
+      
+      <p class="login-error" id="loginError">Token 或仓库名称无效</p>
+    </form>
+    
+    <div class="login-help">
+      <p class="login-help-title">如何获取 Token？</p>
+      <p class="login-help-text">
+        1. 登录 GitHub → Settings → Developer settings<br>
+        2. Personal access tokens → Generate new token<br>
+        3. 勾选 repo 权限 → 生成 Token<br>
+        4. 妥善保存，勿泄露给他人
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="adminPage" class="admin-page">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">行程管理</div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-section="trips">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>我的行程</span>
+      </div>
+      <div class="nav-item" data-section="spots">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>景点</span>
+      </div>
+      <div class="nav-item" data-section="hotels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <span>酒店</span>
+      </div>
+      <div class="nav-item" data-section="locations">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16"/><path d="M16 6v16"/></svg>
+        <span>区域</span>
+      </div>
+      <div class="nav-item" data-section="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span>设置</span>
+      </div>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <button class="btn btn-logout" id="logoutBtn">退出登录</button>
+    </div>
+  </aside>
+  
+  <main class="admin-main">
+    <div id="tripsSection" class="admin-section active">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <input type="text" id="tripSearchInput" class="form-input" placeholder="搜索行程标题..." style="width: 240px; font-size: 12px;">
+          <select id="tripSortSelect" class="form-input" style="width: 140px; font-size: 12px;">
+            <option value="date_desc">最近出发</option>
+            <option value="date_asc">最早出发</option>
+            <option value="name_asc">名称 A-Z</option>
+            <option value="name_desc">名称 Z-A</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="addTripBtn" style="width: auto; font-size: 12px;">+ 新建行程</button>
+      </div>
+      <div id="tripsList"></div>
+    </div>
+    
+    <div id="tripDetailSection" class="admin-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <button class="btn btn-logout" id="backToTripsBtn" style="width: auto; font-size: 12px;">← 返回行程列表</button>
+      </div>
+      
+      <div style="border-bottom: 1px solid var(--border); margin-bottom: 20px;">
+        <div class="trip-tabs">
+          <div class="trip-tab active" data-tab="basic" onclick="switchTripTab('basic')">基本信息</div>
+          <div class="trip-tab" data-tab="days" onclick="switchTripTab('days')">每日行程</div>
+          <div class="trip-tab" data-tab="platforms" onclick="switchTripTab('platforms')">购票平台</div>
+          <div class="trip-tab" data-tab="reservations" onclick="switchTripTab('reservations')">预约提醒</div>
+        </div>
+      </div>
+      
+      <div id="basicPanel" class="trip-panel active">
+        <div class="section-card">
+          <div class="form-group">
+            <label class="form-label">行程标题</label>
+            <input type="text" class="form-input" id="tripTitle">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label">出发日期</label>
+              <input type="date" class="form-input" id="tripStartDate">
+            </div>
+            <div class="form-group">
+              <label class="form-label">回程日期</label>
+              <input type="date" class="form-input" id="tripEndDate">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">副标题</label>
+            <input type="text" class="form-input" id="tripSubtitle">
+          </div>
+          <div class="form-group">
+            <label class="form-label">行程描述</label>
+            <textarea class="form-input" id="tripDescription" rows="4"></textarea>
+          </div>
+          <button class="btn btn-primary" id="saveTripBtn" style="width: auto;">保存修改</button>
+        </div>
+      </div>
+      
+      <div id="daysPanel" class="trip-panel">
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <p style="color: var(--text-dim); font-size: 12px;">共 <span id="daysCount">0</span> 天行程</p>
+            <button class="btn btn-primary" id="addDayBtn" style="width: auto; font-size: 12px;">添加行程</button>
+          </div>
+          <div id="daysList"></div>
+        </div>
+      </div>
+      
+      <div id="platformsPanel" class="trip-panel">
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <p style="color: var(--text-dim); font-size: 12px;">共 <span id="platformsCount">0</span> 个平台</p>
+            <button class="btn btn-primary" id="addPlatformBtn" style="width: auto; font-size: 12px;">+ 添加购票平台</button>
+          </div>
+          <div id="platformsList"></div>
+        </div>
+      </div>
+      
+      <div id="reservationsPanel" class="trip-panel">
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <p style="color: var(--text-dim); font-size: 12px;">共 <span id="reservationsCount">0</span> 个提醒</p>
+            <button class="btn btn-primary" id="addReservationBtn" style="width: auto; font-size: 12px;">+ 添加预约提醒</button>
+          </div>
+          <div id="reservationsList"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="spotsSection" class="admin-section">
+      <div class="section-card">
+        <h3 class="section-card-title">景点管理</h3>
+        <div style="border-bottom: 1px solid var(--border-light); margin-bottom: 16px;">
+          <div class="trip-tabs" style="margin-bottom: 0;">
+            <div class="trip-tab active" data-spot-region-tab="domestic" onclick="switchSpotRegionTab('domestic')">国内</div>
+            <div class="trip-tab" data-spot-region-tab="international" onclick="switchSpotRegionTab('international')">国外</div>
+          </div>
+        </div>
+        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <p style="color: var(--text-dim); font-size: 12px;">共 <span id="spotsCount">0</span> 个景点</p>
+          <button class="btn btn-primary" id="addSpotBtn" style="width: auto; font-size: 12px;">+ 新增景点</button>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="spotSearchInput" class="form-input" placeholder="搜索景点名称、城市..." style="width: 220px; font-size: 12px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-mid); cursor: pointer;">
+              <input type="checkbox" id="spotReservationFilter" style="cursor: pointer;">
+              仅显示需预约
+            </label>
+          </div>
+        </div>
+        <div id="spotsList"></div>
+      </div>
+    </div>
+    
+    <div id="locationsSection" class="admin-section">
+      <div class="section-card">
+        <h3 class="section-card-title">区域管理</h3>
+        
+        <div style="border-bottom: 1px solid var(--border); margin-bottom: 16px;">
+          <div class="trip-tabs">
+            <div class="trip-tab active" data-tab="domestic" onclick="switchLocationTab('domestic')">国内</div>
+            <div class="trip-tab" data-tab="international" onclick="switchLocationTab('international')">国外</div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 24px; min-height: 500px;">
+          <div style="width: 240px; border-right: 1px solid var(--border-light); padding-right: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span id="locationLevel1Label" style="font-size: 13px; font-weight: 500; color: var(--text);">省份</span>
+              <button class="btn btn-primary" onclick="addLocationLevel1()" style="width: auto; padding: 4px 10px; font-size: 11px;">+ 新增</button>
+            </div>
+            <div id="locationLevel1List" style="overflow-y: auto; max-height: 450px;"></div>
+          </div>
+          
+          <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span id="locationLevel2Label" style="font-size: 13px; font-weight: 500; color: var(--text);">城市</span>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary" onclick="addLocationLevel3()" id="addLevel3Btn" style="width: auto; padding: 4px 10px; font-size: 11px;">+ 新增区县</button>
+                <button class="btn btn-primary" onclick="addLocationLevel2()" style="width: auto; padding: 4px 10px; font-size: 11px;">+ 新增城市</button>
+              </div>
+            </div>
+            <div id="locationLevel2List" style="overflow-y: auto; max-height: 450px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="hotelsSection" class="admin-section">
+      <div class="section-card">
+        <h3 class="section-card-title">酒店管理</h3>
+        <div style="border-bottom: 1px solid var(--border-light); margin-bottom: 16px;">
+          <div class="trip-tabs" style="margin-bottom: 0;">
+            <div class="trip-tab active" data-hotel-region-tab="domestic" onclick="switchHotelRegionTab('domestic')">国内</div>
+            <div class="trip-tab" data-hotel-region-tab="international" onclick="switchHotelRegionTab('international')">国外</div>
+          </div>
+        </div>
+        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <p style="color: var(--text-dim); font-size: 12px;">共 <span id="hotelsCount">0</span> 个酒店</p>
+          <button class="btn btn-primary" id="addHotelBtn" style="width: auto; font-size: 12px;">+ 新增酒店</button>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <input type="text" id="hotelSearchInput" class="form-input" placeholder="搜索酒店名称、城市..." style="width: 300px;">
+        </div>
+        <div id="hotelsList"></div>
+      </div>
+    </div>
+    
+    <div id="settingsSection" class="admin-section">
+      <div class="section-card">
+        <h3 class="section-card-title">GitHub 配置</h3>
+        <div class="config-item">
+          <div class="config-label">连接状态</div>
+          <div class="config-status">
+            <span class="status-dot" id="connectionDot"></span>
+            <span id="connectionStatus">未连接</span>
+          </div>
+        </div>
+        <div class="config-item">
+          <div class="config-label">当前仓库</div>
+          <p style="font-size: 13px; color: var(--text);" id="currentRepo">-</p>
+        </div>
+        <div class="config-item">
+          <div class="config-label">线上预览地址</div>
+          <div id="previewUrls" style="font-size: 12px; color: var(--text-mid); line-height: 1.6;">
+            <p style="margin: 4px 0;">🔗 <a href="#" id="settingsPreviewUrl" target="_blank" style="color: var(--accent);">-</a></p>
+            <p style="margin: 4px 0;">⚙️ <a href="#" id="settingsAdminUrl" target="_blank" style="color: var(--accent);">-</a></p>
+          </div>
+        </div>
+        <div class="config-note">
+          Token 存储在浏览器会话中，关闭浏览器后将清除。
+        </div>
+        <div class="config-note" style="color: #e53935; margin-top: 12px;">
+          <strong>安全提示：</strong><br>
+          • Token 仅用于数据同步，请勿在公共设备使用<br>
+          • 建议使用最小权限 Token（仅勾选 repo 权限）<br>
+          • 定期在 GitHub Settings 中 revoke 不用的 Token
+        </div>
+      </div>
+      
+      <div class="section-card">
+        <h3 class="section-card-title">数据管理</h3>
+        <button class="btn btn-primary" id="syncDataBtn" style="width: auto; margin-right: 12px;">同步数据</button>
+        <button class="btn btn-logout" style="width: auto; margin-right: 12px;" id="reloadDataBtn">重新加载数据</button>
+        <button class="btn btn-logout" style="width: auto; margin-right: 12px;" id="previewDataBtn">查看原始数据</button>
+        <button class="btn btn-logout" style="width: auto;" id="importDataBtn">导入数据</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="spotModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="spotModalTitle">编辑景点</h3>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">景点名称</label>
+        <input type="text" class="form-input" id="spotModalName">
+      </div>
+      <div class="form-group">
+        <label class="form-label">所在位置</label>
+        <div style="border-bottom: 1px solid var(--border-light); margin-bottom: 12px;">
+          <div class="trip-tabs" style="margin-bottom: 0;">
+            <div class="trip-tab active" data-location-tab="domestic" onclick="switchSpotLocationTab('domestic')">国内</div>
+            <div class="trip-tab" data-location-tab="international" onclick="switchSpotLocationTab('international')">国外</div>
+          </div>
+        </div>
+        <div id="spotLocationDomestic" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+          <select class="form-input" id="spotModalProvince" disabled>
+            <option value="">选择省份</option>
+          </select>
+          <select class="form-input" id="spotModalCity" disabled>
+            <option value="">选择城市</option>
+          </select>
+          <select class="form-input" id="spotModalDistrict" disabled>
+            <option value="">选择区县</option>
+          </select>
+        </div>
+        <div id="spotLocationInternational" style="display: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <select class="form-input" id="spotModalCountry" disabled>
+            <option value="">选择国家</option>
+          </select>
+          <select class="form-input" id="spotModalIntlCity" disabled>
+            <option value="">选择城市</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">简要描述</label>
+        <input type="text" class="form-input" id="spotModalBrief">
+      </div>
+      <div class="form-group">
+        <label class="form-label">开放时间</label>
+        <input type="text" class="form-input" id="spotModalHours" placeholder="例如：9:00-17:00（周一闭馆）">
+      </div>
+      <div class="form-group">
+        <label class="form-label">门票信息</label>
+        <input type="text" class="form-input" id="spotModalTicket">
+      </div>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="spotModalNeedReservation">
+          <span style="font-size: 13px; color: var(--text);">需要预约</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label">详细介绍</label>
+        <textarea class="form-input" id="spotModalDescription" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="modalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="modalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="dayModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content day-modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="dayModalTitle">编辑每日行程</h3>
+      <button class="modal-close" id="dayModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">天数</label>
+          <input type="number" class="form-input" id="dayModalDay" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">日期</label>
+          <input type="text" class="form-input" id="dayModalDate" readonly style="background: var(--surface-2);">
+        </div>
+        <div class="form-group">
+          <label class="form-label">星期</label>
+          <input type="text" class="form-input" id="dayModalWeekday" readonly style="background: var(--surface-2);">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">行程标题</label>
+        <input type="text" class="form-input" id="dayModalTitleInput">
+      </div>
+      <div class="form-group">
+        <label class="form-label">主题</label>
+        <input type="text" class="form-input" id="dayModalTheme">
+      </div>
+      <div class="form-group">
+        <label class="form-label">景点选择</label>
+        <p style="font-size: 11px; color: var(--text-dim); margin: 4px 0 8px 0;">💡 勾选/双击添加，拖拽调整顺序，点击×移除</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="border: 1px solid var(--border); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border); flex-shrink: 0;">
+              <span style="font-size: 12px; color: var(--text-mid); font-weight: 500;">待选景点</span>
+            </div>
+            <div style="display: flex; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;">
+              <select class="form-input" id="dayModalSpotRegion" style="width: 70px; font-size: 11px; padding: 4px 6px;">
+                <option value="">全部</option>
+                <option value="国内">国内</option>
+                <option value="国外">国外</option>
+              </select>
+              <select class="form-input" id="dayModalSpotProvince" style="flex: 1; font-size: 11px; padding: 4px 6px;">
+                <option value="">--</option>
+              </select>
+              <select class="form-input" id="dayModalSpotCity" style="flex: 1; font-size: 11px; padding: 4px 6px;" disabled>
+                <option value="">--</option>
+              </select>
+              <select class="form-input" id="dayModalSpotDistrict" style="flex: 1; font-size: 11px; padding: 4px 6px;" disabled>
+                <option value="">--</option>
+              </select>
+            </div>
+            <div id="dayModalAvailableSpots" style="max-height: 240px; overflow-y: auto; padding: 8px; background: white; flex: 1;">
+            </div>
+          </div>
+          <div style="border: 1px solid var(--border); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border); flex-shrink: 0;">
+              <span style="font-size: 12px; color: var(--text-mid); font-weight: 500;">已选景点</span>
+              <button id="clearAllBtn" onclick="event.stopPropagation(); if(confirm('确定要清空所有已选景点吗？')) { selectedDaySpotIds = []; renderSelectedSpots(); clearAllSpotSelection(); }" style="font-size: 10px; padding: 3px 10px; background: var(--accent); color: white; border: none; border-radius: 3px; cursor: pointer; transition: background 0.2s;">清空</button>
+            </div>
+            <div id="dayModalSelectedSpots" style="max-height: 292px; overflow-y: auto; padding: 8px; background: white; flex: 1;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">选择住宿</label>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="position: relative;">
+            <input type="text" class="form-input" id="dayHotelSearch" placeholder="搜索酒店名称、城市..." oninput="filterDayHotels(); showDayHotelList(true);" style="padding-left: 8px;" onfocus="this.style.paddingLeft = '8px'; $('selectedHotelBadge')?.style.display = 'none'; showDayHotelList(true);" onblur="if(!this.value && selectedDayHotelId) { this.style.paddingLeft = '200px'; $('selectedHotelBadge')?.style.display = 'flex'; } setTimeout(() => { if(!$('dayHotelSearch')?.matches(':focus') && !$('dayAvailableHotels')?.matches(':hover')) { showDayHotelList(false); } }, 200);">
+            <div id="selectedHotelBadge" style="display: none; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); align-items: center; gap: 6px; padding: 4px 8px; background: var(--accent-dim); border-radius: 4px;">
+              <span style="font-size: 12px; color: var(--accent); font-weight: 500;" id="selectedHotelName"></span>
+              <span style="font-size: 11px; color: var(--text-dim);" id="selectedHotelLocation"></span>
+              <button onclick="clearSelectedHotel(); event.stopPropagation();" style="background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px;" title="移除">×</button>
+            </div>
+          </div>
+          <div id="dayAvailableHotels" style="max-height: 200px; overflow-y: auto; padding: 8px; background: white; border: 1px solid var(--border); border-radius: 4px;">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">交通方式</label>
+        <input type="text" class="form-input" id="dayModalTransport">
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注提示</label>
+        <textarea class="form-input" id="dayModalNote" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="dayModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="dayModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="hotelModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="hotelModalTitle">编辑酒店</h3>
+      <button class="modal-close" id="hotelModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">酒店名称</label>
+        <input type="text" class="form-input" id="hotelModalName">
+      </div>
+      <div class="form-group">
+        <label class="form-label">所在位置</label>
+        <div style="border-bottom: 1px solid var(--border-light); margin-bottom: 12px;">
+          <div class="trip-tabs" style="margin-bottom: 0;">
+            <div class="trip-tab active" data-hotel-location-tab="domestic" onclick="switchHotelLocationTab('domestic')">国内</div>
+            <div class="trip-tab" data-hotel-location-tab="international" onclick="switchHotelLocationTab('international')">国外</div>
+          </div>
+        </div>
+        <div id="hotelLocationDomestic" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+          <select class="form-input" id="hotelModalProvince" disabled>
+            <option value="">选择省份</option>
+          </select>
+          <select class="form-input" id="hotelModalCity" disabled>
+            <option value="">选择城市</option>
+          </select>
+          <select class="form-input" id="hotelModalDistrict" disabled>
+            <option value="">选择区县</option>
+          </select>
+        </div>
+        <div id="hotelLocationInternational" style="display: none; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <select class="form-input" id="hotelModalCountry" disabled>
+            <option value="">选择国家</option>
+          </select>
+          <select class="form-input" id="hotelModalIntlCity" disabled>
+            <option value="">选择城市</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">详细地址</label>
+        <input type="text" class="form-input" id="hotelModalAddress">
+      </div>
+      <div class="form-group">
+        <label class="form-label">联系电话</label>
+        <input type="text" class="form-input" id="hotelModalPhone">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">入住时间</label>
+          <input type="time" class="form-input" id="hotelModalCheckIn">
+        </div>
+        <div class="form-group">
+          <label class="form-label">退房时间</label>
+          <input type="time" class="form-input" id="hotelModalCheckOut">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <textarea class="form-input" id="hotelModalNotes" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="hotelModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="hotelModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="platformModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="platformModalTitle">添加购票平台</h3>
+      <button class="modal-close" id="platformModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">平台名称</label>
+        <input type="text" class="form-input" id="platformModalName">
+      </div>
+      <div class="form-group">
+        <label class="form-label">使用场景</label>
+        <div id="platformUsesContainer">
+          <div class="use-item" style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <input type="text" class="form-input" placeholder="输入使用场景" style="flex: 1;">
+            <button class="btn btn-danger btn-sm" onclick="removeUseItem(this)" style="width: 32px; height: 32px; padding: 0;">-</button>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="addUseBtn" style="margin-top: 8px;">+ 添加使用场景</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="platformModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="platformModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="reservationModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" id="reservationModalTitle">添加预约提醒</h3>
+      <button class="modal-close" id="reservationModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">选择景点</label>
+        <select class="form-input" id="reservationModalSpot" style="min-height: 40px;">
+          <option value="">请选择需要预约的景点</option>
+        </select>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">💡 仅显示行程中需要预约的景点</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">预约平台</label>
+        <input type="text" class="form-input" id="reservationModalPlatform">
+      </div>
+      <div class="form-group">
+        <label class="form-label">提前预约天数</label>
+        <input type="text" class="form-input" id="reservationModalAdvance">
+      </div>
+      <div class="form-group">
+            <label class="form-label">预约截止日期</label>
+            <input type="text" class="form-input" id="reservationModalDueDate" readonly style="background: var(--surface-2);">
+            <p style="font-size: 11px; color: var(--accent); margin-top: 4px;" id="reservationDueDateHint"></p>
+          </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="reservationModalCancelBtn">取消</button>
+      <button class="btn btn-primary" id="reservationModalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="importModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3 class="modal-title">导入数据</h3>
+      <button class="modal-close" id="importModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="importStep1">
+        <div class="import-dropzone" id="importDropzone">
+          <div style="font-size: 32px; margin-bottom: 12px;">📁</div>
+          <p style="font-size: 14px; color: var(--text); margin: 0 0 8px 0;">拖拽 JSON 文件到此处</p>
+          <p style="font-size: 12px; color: var(--text-dim); margin: 0 0 16px 0;">或</p>
+          <button class="btn btn-logout" id="importSelectBtn" style="width: auto;">选择文件</button>
+          <input type="file" id="importFileInput" accept=".json" style="display: none;">
+        </div>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 12px; text-align: center;">
+          💡 导入文件无需维护 ID，系统自动生成并匹配引用关系
+        </p>
+      </div>
+
+      <div id="importStep2" style="display: none;">
+        <div style="margin-bottom: 16px;">
+          <p style="font-size: 13px; color: var(--text); margin: 0 0 12px 0; font-weight: 500;">导入预览</p>
+          <div id="importPreviewContent"></div>
+        </div>
+        <div style="border-top: 1px solid var(--border-light); padding-top: 16px;">
+          <p style="font-size: 13px; color: var(--text); margin: 0 0 12px 0; font-weight: 500;">导入模式</p>
+          <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer; margin-bottom: 12px; padding: 12px; border: 1px solid var(--border); border-radius: 4px;">
+            <input type="radio" name="importMode" value="incremental" checked style="margin-top: 2px;">
+            <div>
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">增量导入（推荐）</div>
+              <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">仅新增不存在的数据，已有数据保留不变</div>
+            </div>
+          </label>
+          <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer; padding: 12px; border: 1px solid var(--border); border-radius: 4px;">
+            <input type="radio" name="importMode" value="full" style="margin-top: 2px;">
+            <div>
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">全量覆盖</div>
+              <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">用导入数据完全替换当前所有数据（不可恢复）</div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-logout" id="importCancelBtn">取消</button>
+      <button class="btn btn-primary" id="importConfirmBtn" style="display: none;">确认导入</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/trips.js"></script>
+<script src="js/spots.js"></script>
+<script src="js/hotels.js"></script>
+<script src="js/locations.js"></script>
+</body>
+</html>
